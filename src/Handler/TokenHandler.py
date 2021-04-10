@@ -41,10 +41,36 @@ class TokenHandler:
         return re.split(regular_exp, str_to_split)
 
     def parse_keywords(self):
-        keywordsFilePath = 'resources\\keywords.txt'
+        keywordsFilePath = '../resources/keywords.txt'
         try:
             with open(keywordsFilePath) as f:
                 lines = f.readlines()
+
+            for line in lines:
+                line = line.replace("\n", "")
+                eachLine = line.split(':')
+                kw_type = eachLine[0].strip()
+                keywords = eachLine[1].replace("\n", "")
+                keywords = keywords.strip()
+                keywords = keywords.split(' ')
+                if kw_type == "verbs":
+                    self.model.set_verbs(keywords)
+                elif kw_type == "ing_nouns":
+                    self.model.set_ing_nouns(keywords)
+                elif kw_type == "random_nouns":
+                    self.model.set_random_nouns(keywords)
+                elif kw_type == "category_nouns":
+                    self.model.set_category_nouns(keywords)
+                elif kw_type == "class_nouns":
+                    self.model.set_class_nouns(keywords)
+                elif kw_type == "intro_nouns":
+                    self.model.set_intro_nouns(keywords)
+                elif kw_type == "exit_nouns":
+                    self.model.set_exit_nouns(keywords)
+                elif kw_type == "general_nouns":
+                    self.model.set_general_nouns(keywords)
+
+            logger.info("Keywords have been parsed.")
         except IOError:
             logger.warning("File %s cannot be found\n", keywordsFilePath)
         else:

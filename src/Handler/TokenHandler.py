@@ -31,3 +31,6 @@ class TokenHandler:
     def custom_splitter(self, str_to_split):
         regular_exp = '|'.join(map(re.escape, self.delim_list))
         return re.split(regular_exp, str_to_split)
+
+    def parse_keywords(self):
+        keywordsFile = open('/resources/keywords.txt')

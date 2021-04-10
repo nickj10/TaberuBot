@@ -18,8 +18,8 @@ bot.
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from Handler.TokenHandler import TokenHandler
-from Handler.TaberuManager import TaberuManager
+from Handler import TokenHandler
+from Handler import TaberuManager
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

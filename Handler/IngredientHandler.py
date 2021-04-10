@@ -9,7 +9,7 @@ class IngredientHandler:
     def getRecipesByIngredient(self, ingredients):
         # self.recipes = self.spoonacular.getRecipesByIngredient(ingredients)
         self.next_recipe = 0  # initialize pointer when retrieving a new set of recipes
-        return self
+        return self.recipes[self.next_recipe]
 
     def getNextRecipe(self):
         self.next_recipe += 1

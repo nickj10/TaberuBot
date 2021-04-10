@@ -5,6 +5,10 @@ class TokenHandler:
     tokens = []
     text = []
     delim_list = "; ", ", ", "# ", "% ", "- "
+    prepositions = ["about", "above", "across", "after", "against", "among", "around", "at",
+                    "before", "behind", "below", "beside", "between", "by", "down", "during",
+                    "for", "from", "in", "inside", "into", "near", "of", "off", "on", "out",
+                    "over", "through", "to", "toward", "under", "up"]
 
     def __init__(self):
         return
@@ -14,6 +18,9 @@ class TokenHandler:
         itr = iter(separatedText)
         for i in range(len(separatedText)):
             tokens = separatedText[i].split(' ')
+            for token in tokens:
+                if token in self.prepositions:
+                    tokens.remove(token)
             self.tokens.append(tokens)
 
         update.message.reply_text(self.tokens)

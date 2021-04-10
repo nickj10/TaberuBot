@@ -1,8 +1,8 @@
-verbs : give, send, need, want, ask, have, do, get, make, know, find, suggest
+verbs : give, send, recommend, need, want, ask, have, do, get, make, know, find, suggest
 ing_nouns: ingredient, element, component, material
 random_nouns : random, any, aleatory, unsorted, arbitrary, casual
 category_nouns  : mexican, asian, chinese, spanish, french
-class_nouns: soup, salad, seafood, veggies, vegan, fruit, meat, poultry, grains, drink
+class_nouns: soup, salad, dessert, seafood, veggies, vegan, fruit, meat, poultry, grains, drink
 intro_nouns : hi, hello
 exit_nouns : finish, goodbye
 general_nouns: recipe, something

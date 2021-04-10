@@ -4,8 +4,8 @@ class Ingredient:
     amount = ""
     unit = ""
 
-    def __init__(self, name, quantity, unit):
+    def __init__(self, name, amount, unit):
         self.name = name
-        self.quantity = quantity
+        self.amount = amount
         self.unit = unit
 

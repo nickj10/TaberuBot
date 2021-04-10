@@ -20,5 +20,15 @@ class Recipe:
         self.ingredients = ingredients
         self.readyInMinutes = readyInMinutes
 
+    def __init__(self, title, ingredients, readyInMinutes, servings, dishTypes, cuisines, instructions, analyzedInstructions):
+        self.title = title
+        self.ingredients = ingredients
+        self.readyInMinutes = readyInMinutes
+        self.servings = servings
+        self.dishTypes = dishTypes
+        self.cuisines = cuisines
+        self.instructions = instructions
+        self.analyzedInstructions = analyzedInstructions
+
     def print_author(self):
         print(self.author)

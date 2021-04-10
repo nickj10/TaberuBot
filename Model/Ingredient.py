@@ -1,7 +1,7 @@
 class Ingredient:
     """Clase que representa una receta"""
     name = ""
-    quantity = ""
+    amount = ""
     unit = ""
 
     def __init__(self, name, quantity, unit):

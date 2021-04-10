@@ -1,5 +1,6 @@
 /.idea
 /Handler/__pycache__
 /Model/__pycache__
-
+src/Handler/__pycache__
+src/Model/__pycache__
 .env

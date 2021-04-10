@@ -18,8 +18,8 @@ bot.
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from Handler.TokenHandler import TokenHandler
-from Handler.TaberuManager import TaberuManager
+from Handler import TokenHandler
+from Handler import TaberuManager
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -64,8 +64,12 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
 
+    # initialize MVC
     taberu = TaberuManager()
     tokenHandler = TokenHandler(taberu)
+
+    # initialize keywords
+    tokenHandler.parse_keywords()
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, tokenHandler.tokenize))

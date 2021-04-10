@@ -11,7 +11,12 @@ class TokenHandler:
 
     def tokenize(self, update, context):
         separatedText = self.custom_splitter(update.message.text)
-        update.message.reply_text(separatedText)
+        itr = iter(separatedText)
+        for i in range(len(separatedText)):
+            tokens = separatedText[i].split(' ')
+            self.tokens.append(tokens)
+
+        update.message.reply_text(self.tokens)
         return
 
     def custom_splitter(self, str_to_split):

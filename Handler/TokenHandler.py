@@ -11,7 +11,8 @@ class TokenHandler:
                     "for", "from", "in", "inside", "into", "near", "of", "off", "on", "out",
                     "over", "through", "to", "toward", "under", "up"]
 
-    def __init__(self):
+    def __init__(self, model):
+        self.model = model
         return
 
     def tokenize(self, update, context):
@@ -23,8 +24,8 @@ class TokenHandler:
                 if token in self.prepositions:
                     tokens.remove(token)
             self.tokens.append(tokens)
-
-        update.message.reply_text(self.tokens)
+        self.model.set_token(self.tokens)
+        #update.message.reply_text(self.tokens)
         return
 
     def custom_splitter(self, str_to_split):

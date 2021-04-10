@@ -64,9 +64,11 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
 
+    # initialize MVC
     taberu = TaberuManager()
     tokenHandler = TokenHandler(taberu)
 
+    # initialize keywords
     tokenHandler.parse_keywords()
 
     # on noncommand i.e message - echo the message on Telegram

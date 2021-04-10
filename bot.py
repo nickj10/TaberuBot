@@ -18,6 +18,8 @@ bot.
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from Handler.TokenHandler import TokenHandler
+from Handler.TaberuManager import TaberuManager
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -30,7 +32,7 @@ logger = logging.getLogger(__name__)
 # context. Error handlers also receive the raised TelegramError object in error.
 def start(update, context):
     """Send a message when the command /start is issued."""
-    update.message.reply_text('"Hello, are you hungry? What do you have in your fridge?')
+    update.message.reply_text('Hello, are you hungry? What do you have in your fridge?')
 
 
 def help(update, context):
@@ -62,8 +64,11 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
 
+    taberu = TaberuManager()
+    tokenHandler = TokenHandler(taberu)
+
     # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text, echo))
+    dp.add_handler(MessageHandler(Filters.text, tokenHandler.tokenize))
 
     # log all errors
     dp.add_error_handler(error)

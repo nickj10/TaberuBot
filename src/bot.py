@@ -67,6 +67,8 @@ def main():
     taberu = TaberuManager()
     tokenHandler = TokenHandler(taberu)
 
+    tokenHandler.parse_keywords()
+
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, tokenHandler.tokenize))
 

@@ -8,7 +8,8 @@ from Model.Recipe import Recipe
 from decouple import config
 
 API_KEY = config('KEY')
-r = requests.get('https://api.spoonacular.com/recipes/random?apiKey='+API_KEY)
+base_url = 'https://api.spoonacular.com/recipes/'
+r = requests.get(base_url+'random?apiKey='+API_KEY)
 dataset = json.loads(r.text)['recipes'][0]
 
 #For recipes we need: likes, title, extendedIngredients[], readyInMinutes,

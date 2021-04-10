@@ -5,8 +5,10 @@ from Model.Ingredient import Ingredient
 from Model.InstructionStep import InstructionStep
 from Model.Instruction import Instruction
 from Model.Recipe import Recipe
+from decouple import config
 
-r = requests.get('https://api.spoonacular.com/recipes/random?apiKey=a96da0b95b0e4491918db6ae0f947393')
+API_KEY = config('KEY')
+r = requests.get('https://api.spoonacular.com/recipes/random?apiKey='+API_KEY)
 dataset = json.loads(r.text)['recipes'][0]
 
 #For recipes we need: likes, title, extendedIngredients[], readyInMinutes,

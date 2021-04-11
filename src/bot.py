@@ -69,9 +69,6 @@ def main():
     tokenHandler = TokenHandler(taberu)
     spoonAPI = SpoonacularAPI()
 
-    #DEBUG
-    recipes = spoonAPI.getAPIRequestByIngredient("apple")
-
     # initialize keywords
     tokenHandler.parse_keywords()
 

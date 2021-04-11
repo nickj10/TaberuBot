@@ -1,5 +1,6 @@
 class Recipe:
     """Class that represents a Recipe"""
+    id = ""
     likes = ""  # rating
     title = ""  # name of the recipe
     ingredients = []
@@ -11,15 +12,6 @@ class Recipe:
     instructions = ""
     analyzedInstructions = []
 
-    def __init__(self):
-        return
-
-    def __init__(self, rating, name, ingredients, readyInMinutes):
-        self.rating = rating
-        self.name = name
-        self.ingredients = ingredients
-        self.readyInMinutes = readyInMinutes
-
     def __init__(self, title, ingredients, readyInMinutes, servings, dishTypes, cuisines, instructions, analyzedInstructions):
         self.title = title
         self.ingredients = ingredients
@@ -30,5 +22,3 @@ class Recipe:
         self.instructions = instructions
         self.analyzedInstructions = analyzedInstructions
 
-    def print_author(self):
-        print(self.author)

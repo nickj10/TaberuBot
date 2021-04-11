@@ -1,0 +1,17 @@
+SYNTAX RULES
+
+START -> INTRO | PHRASE
+
+INTRO -> hello DATA
+
+DATA -> PHRASE | ∅
+
+PHRASE -> verb – NOMINAL | NOMINAL
+
+NOMINAL -> gen – MORE
+
+MORE -> FUNCTION | ∅
+
+FUNCTION -> ING | random | class | category
+
+ING -> ingredients

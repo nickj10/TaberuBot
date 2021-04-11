@@ -32,8 +32,6 @@ parser = ParserHandler(taberu)
 tokenHandler = TokenHandler(taberu, parser)
 spoonacularAPI = SpoonacularAPI()
 
-test = spoonacularAPI.getAPIRequestRandom()
-
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
 def start(update, context):

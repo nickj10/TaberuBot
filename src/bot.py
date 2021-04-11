@@ -61,6 +61,11 @@ def analyzeUserInput(update, context):
         recipe = spoonacularAPI.getAPIRequestRandom()
         update.message.reply_text(constructRecipeString(recipe))
 
+    ing_nouns = ['ingredient', 'element', 'component', 'material']
+    if parserOut in ing_nouns:
+        recipe = spoonacularAPI.getAPIRequestByIngredient("eggs")
+        update.message.reply_text(constructRecipeString(recipe))
+
 def constructRecipeString(recipe):
     h1 = "Here's a recipe that I can recommend: " + recipe.title + "\n"
     h2 = "\nIt can be prepared in " + str(recipe.readyInMinutes) + " minutes and for up to " + str(recipe.servings) + " servings!"

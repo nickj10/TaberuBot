@@ -53,8 +53,8 @@ class ParserHandler:
                         return "category"
                     else:
                         print(tokens[len(tokens) - 2])
-                        print("random")
-                        return "random"
+                        print("ingredient")
+                        return "ingredient"
 
             top = stack[len(stack) - 1]
 

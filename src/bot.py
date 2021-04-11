@@ -18,7 +18,7 @@ bot.
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from Handler import TokenHandler, TaberuManager, ParserHandler
+from Handler import TokenHandler, TaberuManager, ParserHandler, SpoonacularAPI
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -30,7 +30,9 @@ logger = logging.getLogger(__name__)
 taberu = TaberuManager()
 parser = ParserHandler(taberu)
 tokenHandler = TokenHandler(taberu, parser)
+spoonacularAPI = SpoonacularAPI()
 
+test = spoonacularAPI.getAPIRequestRandom()
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
@@ -54,6 +56,19 @@ def analyzeUserInput(update, context):
         expr.append("final")
         parserOut = tokenHandler.parse_tokens(expr)
         logger.info("The parsed output is %s", parserOut)
+
+    if parserOut == "random":
+        recipe = spoonacularAPI.getAPIRequestRandom()
+        update.message.reply_text(constructRecipeString(recipe))
+
+def constructRecipeString(recipe):
+    h1 = "Here's a recipe that I can recommend: " + recipe.title + "\n"
+    h2 = "\nIt can be prepared in " + str(recipe.readyInMinutes) + " minutes and for up to " + str(recipe.servings) + " servings!"
+    bodyIng = "\n\nIngredients: \n"
+    for ing in recipe.ingredients:
+        bodyIng = bodyIng + "\t " + ing.name + " - " + str(ing.amount) + " " + str(ing.unit) + "\n"
+    bodyLink = "\nHere's how you can prepare it: " + recipe.sourceUrl + "\n"
+    return h1+h2+bodyIng+bodyLink
 
 
 def error(update, context):

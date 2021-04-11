@@ -18,8 +18,9 @@ class TokenHandler:
                     "for", "from", "in", "inside", "into", "near", "of", "off", "on", "out",
                     "over", "through", "to", "toward", "under", "up"]
 
-    def __init__(self, model):
+    def __init__(self, model, parser):
         self.model = model
+        self.parser = parser
 
         return
 

@@ -18,8 +18,7 @@ bot.
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from Handler import TokenHandler
-from Handler import TaberuManager
+from Handler import TokenHandler, TaberuManager, ParserHandler
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -66,7 +65,8 @@ def main():
 
     # initialize MVC
     taberu = TaberuManager()
-    tokenHandler = TokenHandler(taberu)
+    parser = ParserHandler()
+    tokenHandler = TokenHandler(taberu, parser)
 
     # initialize keywords
     tokenHandler.parse_keywords()

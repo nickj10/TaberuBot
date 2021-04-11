@@ -20,9 +20,8 @@ class ParserHandler:
              [None, None, None, "ingredients", None, None, None, None, None]
              ]
 
-    # """TOKENS HARDCODED"""
-    # tokens = ["hello", "verb", "gen", "random", "final"]
-    # """tokens = ["hello", "final"]"""
+    def __init__(self, model):
+        self.model = model
 
     def parse(self, tokens):
         stack = ["START"]  # initialize stack
@@ -112,3 +111,32 @@ class ParserHandler:
             if t == top:
                 return True
         return False
+
+    def checkIfKeyword(self, token):
+        isKey = False
+        keywordType = ""
+        if token in self.model.get_verbs():
+            isKey = True
+            keywordType = "verb"
+        elif token in self.model.ing_nouns:
+            isKey = True
+            keywordType = "ing"
+        elif token in self.model.random_nouns:
+            isKey = True
+            keywordType = "random"
+        elif token in self.model.category_nouns:
+            isKey = True
+            keywordType = "category"
+        elif token in self.model.class_nouns:
+            isKey = True
+            keywordType = "class"
+        elif token in self.model.intro_nouns:
+            isKey = True
+            keywordType = "hello"
+        elif token in self.model.exit_nouns:
+            isKey = True
+            keywordType = "bye"
+        elif token in self.model.general_nouns:
+            isKey = True
+            keywordType = "gen"
+        return isKey, keywordType

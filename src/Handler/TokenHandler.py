@@ -36,10 +36,15 @@ class TokenHandler:
         itr = iter(separatedText)
         for i in range(len(separatedText)):
             tokens = separatedText[i].split(' ')
+            typeTokens = []
             for token in tokens:
                 if token in self.prepositions:
                     tokens.remove(token)
-            self.tokens.append(tokens)
+                else:
+                    isKey, kwType = self.parser.checkIfKeyword(token)
+                    if isKey:
+                        typeTokens.append(kwType)  # if its not a keyword, ignore it
+            self.tokens.append(typeTokens)
         self.model.set_tokens(self.tokens)
         # update.message.reply_text(self.tokens)
         return
@@ -63,7 +68,7 @@ class TokenHandler:
                 kw_type = eachLine[0].strip()
                 keywords = eachLine[1].replace("\n", "")
                 keywords = keywords.strip()
-                keywords = keywords.split(' ')
+                keywords = keywords.split(', ')
                 if kw_type == "verbs":
                     self.model.set_verbs(keywords)
                 elif kw_type == "ing_nouns":

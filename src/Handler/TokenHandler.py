@@ -24,7 +24,8 @@ class TokenHandler:
         return
 
     def tokenize(self, update, context):
-        separatedText = self.custom_splitter(update.message.text)
+        lowerText = update.message.text.lower()
+        separatedText = self.custom_splitter(lowerText)
         itr = iter(separatedText)
         for i in range(len(separatedText)):
             tokens = separatedText[i].split(' ')

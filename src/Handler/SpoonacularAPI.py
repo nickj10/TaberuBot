@@ -7,42 +7,35 @@ from Model.Instruction import Instruction
 from Model.Recipe import Recipe
 from decouple import config
 
-API_KEY = ""
-base_url = ""
+API_KEY = config('KEY')
+base_url = 'https://api.spoonacular.com/recipes/'
 
 class SpoonacularAPI:
 
     def __init__(self):
-        self.API_KEY = config('KEY')
-        self.base_url = 'https://api.spoonacular.com/recipes/'
-
-    def getIngredientsParameters(self, param_ing):
-        count = len(param_ing)
-        param = ""
-        if param_ing:  # if parameters is not empty
-            for ing in param_ing:
-                count_aux = + 1
-                if count_aux <= (count - 1):
-                    param = param + ing + ','
-                else:
-                    param = + ing
-        return param
+        self
 
     def sortRecipeRankingByLikes(self, value):
         return value['likes']
 
-    # def getRecipeWithId(id):
+    def getRecipesWithId(self, dataset_sort):
+        #arr_possible_recipes = []
+        #for recipe in dataset_sort:
+        id = str(dataset_sort[0]['id'])
+        r = requests.get(base_url + id + '/information?apiKey=' + API_KEY)
+        recipe_data = json.loads(r.text)
 
-    def getAPIRequestRandom(self):
-        r = requests.get(base_url + 'random?apiKey=' + API_KEY)
-        dataset = json.loads(r.text)['recipes'][0]
+        #arr_possible_recipes.append(self.getRecipeInfo(recipe_data))
+        return self.getRecipeInfo(recipe_data)
 
-        arr_ingredients= []
+    def getRecipeInfo(self, dataset):
+        arr_ingredients = []
         arr_step_ing = []
-        arr_dishTypes= []
+        arr_dishTypes = []
         arr_cuisines = []
         arr_step_equipment = []
         arr_steps = []
+        instructions = ""
 
         if dataset['extendedIngredients']:
             for ing in dataset['extendedIngredients']:
@@ -70,17 +63,21 @@ class SpoonacularAPI:
                     arr_steps.append(InstructionStep(arr_step_ing,arr_step_equipment))
                 instructions = Instruction(arr_steps)
 
-        recipe_object = (Recipe(dataset['title'],arr_ingredients,dataset['readyInMinutes'],dataset['servings'],arr_dishTypes,arr_cuisines, dataset['instructions'],instructions))
+        recipe_object = Recipe(dataset['title'], arr_ingredients, dataset['readyInMinutes'], dataset['servings'], arr_dishTypes, arr_cuisines, dataset['instructions'], instructions)
         return recipe_object
 
-    def getAPIRequestByIngredient(self, param_ing):
-        param = self.getIngredientsParameters(param_ing)
-        r = requests.get(base_url + 'findByIngredients?apiKey=' + API_KEY + 'ingredients=' + param)
-        dataset = r.json(r.text)
-        dataset_sort = sorted(dataset, key=self.sortRecipeRankingByLikes)
-        print('hello')
+    def getAPIRequestRandom(self):
+        r = requests.get(base_url + 'random?apiKey=' + API_KEY)
+        dataset = json.loads(r.text)['recipes'][0]
+        return self.getRecipeInfo(dataset)
 
-        # recipe_object = getRecipeWithId()
+    def getAPIRequestByIngredient(self, param_ing):
+        r = requests.get(base_url + 'findByIngredients?apiKey=' + API_KEY + '&ingredients=' + param_ing)
+        dataset = json.loads(r.text)
+        #Returns sorted recipes by Likes.
+        dataset_sort = sorted(dataset, key=self.sortRecipeRankingByLikes, reverse=True)
+        recipes = self.getRecipesWithId(dataset_sort)
+        return recipes
 
 
 

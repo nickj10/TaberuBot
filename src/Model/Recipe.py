@@ -12,9 +12,6 @@ class Recipe:
     instructions = ""
     analyzedInstructions = []
 
-    def __init__(self):
-        return
-
     def __init__(self, title, ingredients, readyInMinutes, servings, dishTypes, cuisines, instructions, analyzedInstructions):
         self.title = title
         self.ingredients = ingredients
@@ -25,6 +22,3 @@ class Recipe:
         self.instructions = instructions
         self.analyzedInstructions = analyzedInstructions
 
-    def __init__(self, id, likes):
-        self.id = id
-        self.likes = likes

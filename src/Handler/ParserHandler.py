@@ -9,15 +9,16 @@ logger = logging.getLogger(__name__)
 
 class ParserHandler:
     Terminals = ["hello", "verb", "gen", "ingredients", "random", "class", "category", "final", "bye"]
-    noTerminals = ["START", "INTRO", "DATA", "PHRASE", "NOMINAL", "MORE", "FUNCTION", "ING"]
-    table = [["INTRO", "PHRASE", "NOMINAL", None, None, None, None, None, "bye"],
+    noTerminals = ["START", "INTRO", "DATA", "PHRASE", "NOMINAL", "FUNCTION", "GEN", "ING"]
+    table = [["INTRO", "PHRASE", "NOMINAL", None, "FUNCTION", "FUNCTION", "FUNCTION", None, "bye"],
              ["hello DATA", None, None, None, None, None, None, None, None],
-             [None, "PHRASE", "NOMINAL", None, None, None, None, "final", None],
-             [None, "verb NOMINAL", "NOMINAL", None, None, None, None, None, None],
-             [None, None, "gen MORE", None, None, None, None, None, None],
-             [None, None, None, "FUNCTION", "FUNCTION", "FUNCTION", "FUNCTION", "final", None],
-             [None, None, None, "ING", "random", "class", "category", None, None],
-             [None, None, None, "ingredients", None, None, None, None, None]]
+             [None, "PHRASE", "NOMINAL", None, "FUNCTION", "FUNCTION", "FUNCTION", "final", None],
+             [None, "verb NOMINAL", "NOMINAL", None, "FUNCTION", "FUNCTION", "FUNCTION", None, None],
+             [None, None, "gen ING", None, "FUNCTION", "FUNCTION", "FUNCTION", None, None],
+             [None, None, None, None, "random GEN", "class GEN", "category GEN", "final", None],
+             [None, None, "gen", None, None, None, None, None, None],
+             [None, None, None, "ingredients", None, None, None, None, None]
+             ]
 
     # """TOKENS HARDCODED"""
     # tokens = ["hello", "verb", "gen", "random", "final"]
@@ -36,11 +37,22 @@ class ParserHandler:
 
             if counter == len(tokens) - 1:
                 if tokens[len(tokens) - 1] != "final":
-                    logger.warning("The sentence does not end in final")
+                    print("sentencia no acaba en final")
                 else:
                     """AQUI SALE EL TIPO QUE NECESITAMOS PARA ELEGIR LA FUNCIÓN"""
-                    logger.debug("The type of token is: %s", tokens[len(tokens) - 2])
-                    break
+                    if tokens[len(tokens) - 3] == "random":
+                        print("random")
+                        return "random"
+                    elif tokens[len(tokens) - 3] == "class":
+                        print("class")
+                        return "class"
+                    elif tokens[len(tokens) - 3] == "category":
+                        print("category")
+                        return "category"
+                    else:
+                        print(tokens[len(tokens) - 2])
+                        print("random")
+                        return "random"
 
             top = stack[len(stack) - 1]
 

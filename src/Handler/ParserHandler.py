@@ -51,7 +51,11 @@ class ParserHandler:
                 row = self.getnoTermIndex(top)
                 column = self.getTermIndex(tokens[counter])
 
-                rule = self.table[row][column]
+                # control negative values to avoid limit out of range exceptions
+                if row < 0 or column < 0:
+                    rule = None
+                else:
+                    rule = self.table[row][column]
                 if rule is None:
                     """Error sintactico"""
                     logging.error("There is no defined Rule for the token: %s", tokens[counter])

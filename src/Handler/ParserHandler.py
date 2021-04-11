@@ -23,7 +23,7 @@ class ParserHandler:
     # tokens = ["hello", "verb", "gen", "random", "final"]
     # """tokens = ["hello", "final"]"""
 
-    def parser(self, tokens):
+    def parse(self, tokens):
         stack = ["START"]  # initialize stack
         flag = True
         counter = 0

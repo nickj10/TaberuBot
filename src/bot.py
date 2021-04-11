@@ -26,6 +26,11 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
+# initialize MVC
+taberu = TaberuManager()
+parser = ParserHandler()
+tokenHandler = TokenHandler(taberu, parser)
+
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
@@ -39,9 +44,11 @@ def help(update, context):
     update.message.reply_text('Help!')
 
 
-def echo(update, context):
-    """Echo the user message."""
-    update.message.reply_text(update.message.text)
+def analyzeUserInput(update, context):
+    tokenHandler.tokenize(update, context)
+    update.message.reply_text("Hold on for a second! I will analyze your request.")
+    parserOut = tokenHandler.parse_tokens()
+    logger.debug("The parsed output is %s", parserOut)
 
 
 def error(update, context):
@@ -63,16 +70,11 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
 
-    # initialize MVC
-    taberu = TaberuManager()
-    parser = ParserHandler()
-    tokenHandler = TokenHandler(taberu, parser)
-
     # initialize keywords
     tokenHandler.parse_keywords()
 
     # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text, tokenHandler.tokenize))
+    dp.add_handler(MessageHandler(Filters.text, analyzeUserInput))
 
     # log all errors
     dp.add_error_handler(error)

@@ -40,3 +40,6 @@ class TaberuManager:
 
     def get_tokens(self):
         return self.tokens
+
+    def get_verbs(self):
+        return self.verbs

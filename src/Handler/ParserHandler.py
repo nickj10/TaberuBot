@@ -36,24 +36,19 @@ class ParserHandler:
 
             if counter == len(tokens) - 1:
                 if tokens[len(tokens) - 1] != "final":
-                    print("sentencia no acaba en final")
+                    logger.error("The Sentence does not end in 'final'")
                 elif tokens[len(tokens) - 2] == "hello":
-                    print("hello")
                     return "hello"
                 else:
                     """AQUI SALE EL TIPO QUE NECESITAMOS PARA ELEGIR LA FUNCIÓN"""
                     if tokens[len(tokens) - 3] == "random":
-                        print("random")
                         return "random"
                     elif tokens[len(tokens) - 3] == "class":
-                        print("class")
                         return "class"
                     elif tokens[len(tokens) - 3] == "category":
-                        print("category")
                         return "category"
                     else:
                         print(tokens[len(tokens) - 2])
-                        print("random")
                         return "random"
 
             top = stack[len(stack) - 1]

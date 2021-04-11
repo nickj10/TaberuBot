@@ -43,8 +43,8 @@ class TokenHandler:
         # update.message.reply_text(self.tokens)
         return
 
-    def parse_tokens(self):
-        return self.parser.parse(self.tokens)
+    def parse_tokens(self, tokens):
+        return self.parser.parse(tokens)
 
     def custom_splitter(self, str_to_split):
         regular_exp = '|'.join(map(re.escape, self.delim_list))

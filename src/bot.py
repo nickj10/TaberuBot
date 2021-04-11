@@ -47,8 +47,13 @@ def help(update, context):
 def analyzeUserInput(update, context):
     tokenHandler.tokenize(update, context)
     update.message.reply_text("Hold on for a second! I will analyze your request.")
-    parserOut = tokenHandler.parse_tokens()
-    logger.debug("The parsed output is %s", parserOut)
+    expressions = taberu.get_tokens()
+
+    # run parser for each expression
+    for expr in expressions:
+        expr.append("final")
+        parserOut = tokenHandler.parse_tokens(expr)
+        logger.debug("The parsed output is %s", parserOut)
 
 
 def error(update, context):

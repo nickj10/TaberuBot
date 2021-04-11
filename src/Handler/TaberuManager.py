@@ -37,3 +37,6 @@ class TaberuManager:
 
     def set_general_nouns(self, general_nouns):
         self.general_nouns = general_nouns
+
+    def get_tokens(self):
+        return self.tokens

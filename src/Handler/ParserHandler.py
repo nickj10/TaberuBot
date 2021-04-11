@@ -30,7 +30,7 @@ class ParserHandler:
 
         if "bye" in tokens:
             logger.info("User has said goodbye to the bot.")
-            return
+            return "bye"
 
         while counter < len(tokens):
 

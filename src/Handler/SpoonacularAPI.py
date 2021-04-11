@@ -63,7 +63,7 @@ class SpoonacularAPI:
                     arr_steps.append(InstructionStep(arr_step_ing,arr_step_equipment))
                 instructions = Instruction(arr_steps)
 
-        recipe_object = Recipe(dataset['title'], arr_ingredients, dataset['readyInMinutes'], dataset['servings'], arr_dishTypes, arr_cuisines, dataset['instructions'], instructions)
+        recipe_object = Recipe(dataset['title'], arr_ingredients, dataset['readyInMinutes'], dataset['servings'], dataset['sourceUrl'], arr_dishTypes, arr_cuisines, dataset['instructions'], instructions)
         return recipe_object
 
     def getAPIRequestRandom(self):

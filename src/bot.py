@@ -18,14 +18,18 @@ bot.
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from Handler import TokenHandler
-from Handler import TaberuManager
+from Handler import TokenHandler, TaberuManager, ParserHandler
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
+# initialize MVC
+taberu = TaberuManager()
+parser = ParserHandler()
+tokenHandler = TokenHandler(taberu, parser)
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -40,9 +44,19 @@ def help(update, context):
     update.message.reply_text('Help!')
 
 
-def echo(update, context):
-    """Echo the user message."""
-    update.message.reply_text(update.message.text)
+def analyzeUserInput(update, context):
+    tokenHandler.tokenize(update, context)
+    update.message.reply_text("Hold on for a second! I will analyze your request.")
+    expressions = taberu.get_tokens()
+
+    # DEBUG - hardcoded para seguir con el código
+    expressions = [["hello", "verb", "random", "gen"]]
+
+    # run parser for each expression
+    for expr in expressions:
+        expr.append("final")
+        parserOut = tokenHandler.parse_tokens(expr)
+        logger.info("The parsed output is %s", parserOut)
 
 
 def error(update, context):
@@ -64,15 +78,11 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
 
-    # initialize MVC
-    taberu = TaberuManager()
-    tokenHandler = TokenHandler(taberu)
-
     # initialize keywords
     tokenHandler.parse_keywords()
 
     # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text, tokenHandler.tokenize))
+    dp.add_handler(MessageHandler(Filters.text, analyzeUserInput))
 
     # log all errors
     dp.add_error_handler(error)

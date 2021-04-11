@@ -49,11 +49,14 @@ def analyzeUserInput(update, context):
     update.message.reply_text("Hold on for a second! I will analyze your request.")
     expressions = taberu.get_tokens()
 
+    # DEBUG - hardcoded para seguir con el código
+    expressions = [["hello", "verb", "random", "gen"]]
+
     # run parser for each expression
     for expr in expressions:
         expr.append("final")
         parserOut = tokenHandler.parse_tokens(expr)
-        logger.debug("The parsed output is %s", parserOut)
+        logger.info("The parsed output is %s", parserOut)
 
 
 def error(update, context):

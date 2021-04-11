@@ -18,23 +18,39 @@ class TokenHandler:
                     "for", "from", "in", "inside", "into", "near", "of", "off", "on", "out",
                     "over", "through", "to", "toward", "under", "up"]
 
-    def __init__(self, model):
+    def __init__(self, model, parser):
         self.model = model
+        self.parser = parser
 
         return
 
+    def get_model(self):
+        return self.model
+
+    def get_parser(self):
+        return self.parser
+
     def tokenize(self, update, context):
-        separatedText = self.custom_splitter(update.message.text)
+        lowerText = update.message.text.lower()
+        separatedText = self.custom_splitter(lowerText)
         itr = iter(separatedText)
         for i in range(len(separatedText)):
             tokens = separatedText[i].split(' ')
+            typeTokens = []
             for token in tokens:
                 if token in self.prepositions:
                     tokens.remove(token)
-            self.tokens.append(tokens)
-        self.model.set_token(self.tokens)
+                else:
+                    isKey, kwType = self.parser.checkIfKeyword(token)
+                    if isKey:
+                        typeTokens.append(kwType)  # if its not a keyword, ignore it
+            self.tokens.append(typeTokens)
+        self.model.set_tokens(self.tokens)
         # update.message.reply_text(self.tokens)
         return
+
+    def parse_tokens(self, tokens):
+        return self.parser.parse(tokens)
 
     def custom_splitter(self, str_to_split):
         regular_exp = '|'.join(map(re.escape, self.delim_list))
@@ -52,7 +68,7 @@ class TokenHandler:
                 kw_type = eachLine[0].strip()
                 keywords = eachLine[1].replace("\n", "")
                 keywords = keywords.strip()
-                keywords = keywords.split(' ')
+                keywords = keywords.split(', ')
                 if kw_type == "verbs":
                     self.model.set_verbs(keywords)
                 elif kw_type == "ing_nouns":

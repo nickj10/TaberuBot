@@ -25,6 +25,6 @@ class Recipe:
         self.instructions = instructions
         self.analyzedInstructions = analyzedInstructions
 
-    def __init__(self, id, title):
+    def __init__(self, id, likes):
         self.id = id
-        self.title = title
+        self.likes = likes

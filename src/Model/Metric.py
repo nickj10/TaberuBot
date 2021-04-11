@@ -1,4 +1,4 @@
-class Measure:
+class Metric:
     """Class that represents a metric"""
     amount = ""
     unitShort = ""

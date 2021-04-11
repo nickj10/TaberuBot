@@ -45,8 +45,8 @@ if dataset['analyzedInstructions']: #if we have instructions
                 arr_step_ing.append(step_ing['name'])
             for step_equip in steps['equipment']:
                 arr_step_equipment.append(step_equip['name'])
-            arr_steps.append(InstructionStep("",arr_step_ing,arr_step_equipment))
-        instructions = Instruction("",arr_steps)
+            arr_steps.append(InstructionStep(arr_step_ing,arr_step_equipment))
+        instructions = Instruction(arr_steps)
 
 
 recipe_object = (Recipe(dataset['title'],arr_ingredients,dataset['readyInMinutes'],dataset['servings'],arr_dishTypes,arr_cuisines, dataset['instructions'],instructions))

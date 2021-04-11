@@ -11,6 +11,9 @@ class IngredientHandler:
         self.next_recipe = 0  # initialize pointer when retrieving a new set of recipes
         return self.recipes[self.next_recipe]
 
+    def setRecipesByIngredient(self, recipes):
+        self.recipes=recipes
+
     def getNextRecipe(self):
         self.next_recipe += 1
         return self.recipes[self.next_recipe]

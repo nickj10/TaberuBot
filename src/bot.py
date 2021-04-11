@@ -46,7 +46,6 @@ def help(update, context):
 
 def analyzeUserInput(update, context):
     tokenHandler.tokenize(update, context)
-    update.message.reply_text("Hold on for a second! I will analyze your request.")
     expressions = taberu.get_tokens()
 
     # run parser for each expression
@@ -54,6 +53,13 @@ def analyzeUserInput(update, context):
         expr.append("final")
         parserOut = tokenHandler.parse_tokens(expr)
         logger.info("The parsed output is %s", parserOut)
+        if parserOut == "bye":
+            update.message.reply_text("Goodbye!")
+        elif parserOut == "hello":
+            if expressions.len == 1:  # only send this message if there's only one expression
+                update.message.reply_text("How can I help you?")
+        else:
+            update.message.reply_text("Hold on for a second! Searching for recipes...")
 
 
 def error(update, context):

@@ -37,6 +37,9 @@ class ParserHandler:
             if counter == len(tokens) - 1:
                 if tokens[len(tokens) - 1] != "final":
                     print("sentencia no acaba en final")
+                elif tokens[len(tokens) - 2] == "hello":
+                    print("hello")
+                    return "hello"
                 else:
                     """AQUI SALE EL TIPO QUE NECESITAMOS PARA ELEGIR LA FUNCIÓN"""
                     if tokens[len(tokens) - 3] == "random":

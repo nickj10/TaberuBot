@@ -47,6 +47,7 @@ def help(update, context):
 def analyzeUserInput(update, context):
     tokenHandler.tokenize(update, context)
     expressions = taberu.get_tokens()
+    ingredients = taberu.get_values()
 
     # run parser for each expression
     for expr in expressions:

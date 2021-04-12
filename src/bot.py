@@ -47,28 +47,43 @@ def help(update, context):
 def analyzeUserInput(update, context):
     tokenHandler.tokenize(update, context)
     expressions = taberu.get_tokens()
+    ingredients = []
+    ingredients = taberu.get_values()
+    cuisines = taberu.get_categories()
+    types = taberu.get_classes()
 
     # run parser for each expression
     for expr in expressions:
+
         expr.append("final")
         parserOut = tokenHandler.parse_tokens(expr)
+
         logger.info("The parsed output is %s", parserOut)
         if parserOut == "bye":
-            update.message.reply_text("Goodbye!")
+            update.message.reply_text("Goodbye, see you soon!")
         elif parserOut == "hello":
-            if expressions.len == 1:  # only send this message if there's only one expression
                 update.message.reply_text("How can I help you?")
+        elif parserOut != "random" and parserOut != "ing" and parserOut != "category" and parserOut != "class":
+            update.message.reply_text("I'm sorry, I didn't understand you. Can you put it another way? :) ")
         else:
             update.message.reply_text("Hold on for a second! Searching for recipes...")
 
-    if parserOut == "random":
-        recipe = spoonacularAPI.getAPIRequestRandom()
-        update.message.reply_text(constructRecipeString(recipe))
+            if parserOut == "random":
+                recipe = spoonacularAPI.getAPIRequestRandom()
 
-    ing_nouns = ['ingredient', 'element', 'component', 'material']
-    if parserOut in ing_nouns:
-        recipe = spoonacularAPI.getAPIRequestByIngredient("eggs")
-        update.message.reply_text(constructRecipeString(recipe))
+            if parserOut == "ing":
+                recipe = spoonacularAPI.getAPIRequestByIngredient(ingredients[0][0])
+
+            if parserOut == "category":
+                recipe = spoonacularAPI.getAPIRequestByCuisine(cuisines[0][0])
+
+            if parserOut == "class":
+                recipe = spoonacularAPI.getAPIRequestByClass(types[0][0])
+
+            update.message.reply_text(constructRecipeString(recipe))
+            update.message.reply_text("Can I help you with something else? :)")
+
+
 
 def constructRecipeString(recipe):
     h1 = "Here's a recipe that I can recommend: " + recipe.title + "\n"

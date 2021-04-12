@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class TokenHandler:
+    values = []
     expressions = []
     tokens = []
     text = []
@@ -33,9 +34,16 @@ class TokenHandler:
     def tokenize(self, update, context):
         lowerText = update.message.text.lower()
         separatedText = self.custom_splitter(lowerText)
+        self.tokens = []
+        self.values = []
+        self.categories = []
+        self.classes = []
         for i in range(len(separatedText)):
             tokens = separatedText[i].split(' ')
             typeTokens = []
+            ingredients = []
+            categories = []
+            classes = []
             for token in tokens:
                 if token in self.prepositions:
                     tokens.remove(token)
@@ -43,8 +51,20 @@ class TokenHandler:
                     isKey, kwType = self.parser.checkIfKeyword(token)
                     if isKey:
                         typeTokens.append(kwType)  # if its not a keyword, ignore it
+                    if kwType == "ing":
+                        ingredients.append(token)
+                    if kwType == "category":
+                        categories.append(token)
+                    if kwType == "class":
+                        classes.append(token)
             self.tokens.append(typeTokens)
+            self.values.append(ingredients)
+            self.categories.append(categories)
+            self.classes.append(classes)
         self.model.set_tokens(self.tokens)
+        self.model.set_values(self.values)
+        self.model.set_categories(self.categories)
+        self.model.set_classes(self.classes)
         # update.message.reply_text(self.tokens)
         return
 

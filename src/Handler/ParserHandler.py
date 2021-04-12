@@ -47,10 +47,10 @@ class ParserHandler:
                         return "class"
                     elif tokens[len(tokens) - 3] == "category":
                         return "category"
+                    elif tokens[len(tokens) - 3] == "gen":
+                        return ("ingredients")
                     else:
-                        print(tokens[len(tokens) - 2])
-                        print("ingredient")
-                        return "ingredient"
+                        return "random"
 
             top = stack[len(stack) - 1]
 

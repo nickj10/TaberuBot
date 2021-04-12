@@ -73,7 +73,8 @@ def analyzeUserInput(update, context):
         update.message.reply_text("Can I help you with something else? :)")
 
     if parserOut == "category":
-        recipe = spoonacularAPI.getAPIRequestByIngredient("italian")
+        update.message.reply_text("We cannot find recipes by category yet, but we recommend this recipe. I hope you like it!")
+        recipe = spoonacularAPI.getAPIRequestRandom()
         update.message.reply_text(constructRecipeString(recipe))
         update.message.reply_text("Can I help you with something else? :)")
 

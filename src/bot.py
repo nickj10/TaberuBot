@@ -50,6 +50,7 @@ def analyzeUserInput(update, context):
     ingredients = []
     ingredients = taberu.get_values()
     cuisines = taberu.get_categories()
+    types = taberu.get_classes()
 
     # run parser for each expression
     for expr in expressions:
@@ -62,7 +63,7 @@ def analyzeUserInput(update, context):
             update.message.reply_text("Goodbye, see you soon!")
         elif parserOut == "hello":
                 update.message.reply_text("How can I help you?")
-        elif parserOut != "random" and parserOut != "ing" and parserOut != "category":
+        elif parserOut != "random" and parserOut != "ing" and parserOut != "category" and parserOut != "class":
             update.message.reply_text("I'm sorry, I didn't understand you. Can you put it another way? :) ")
         else:
             update.message.reply_text("Hold on for a second! Searching for recipes...")
@@ -73,9 +74,11 @@ def analyzeUserInput(update, context):
             if parserOut == "ing":
                 recipe = spoonacularAPI.getAPIRequestByIngredient(ingredients[0][0])
 
-
             if parserOut == "category":
                 recipe = spoonacularAPI.getAPIRequestByCuisine(cuisines[0][0])
+
+            if parserOut == "class":
+                recipe = spoonacularAPI.getAPIRequestByClass(types[0][0])
 
             update.message.reply_text(constructRecipeString(recipe))
             update.message.reply_text("Can I help you with something else? :)")

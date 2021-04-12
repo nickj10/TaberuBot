@@ -4,6 +4,7 @@ class TaberuManager:
         self.tokens = []
         self.values = []
         self.categories = []
+        self.classes = []
         self.verbs = []
         self.ing_nouns = []
         self.random_nouns = []
@@ -21,6 +22,9 @@ class TaberuManager:
 
     def set_categories(self, categories):
         self.categories = categories
+
+    def set_classes(self, classes):
+        self.classes = classes
 
     def set_verbs(self, verbs):
         self.verbs = verbs
@@ -54,6 +58,9 @@ class TaberuManager:
 
     def get_categories(self):
         return self.categories
+
+    def get_classes(self):
+        return self.classes
 
     def get_verbs(self):
         return self.verbs

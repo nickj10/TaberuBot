@@ -36,6 +36,9 @@ Funcionalidades
 Script ejemplo:
 -Hello Taberubot!
 -I want a random recipe
+-Recommend me another aleatory recipe
+-I dont like it recommend me something else
+-Ok now give me an spanish recipe
 -Thinking about it better send me a recipe with pork
 -Thank you very much now I need a dessert recipe
 -What can I eat for lunch?

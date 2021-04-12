@@ -35,6 +35,7 @@ class TokenHandler:
         lowerText = update.message.text.lower()
         separatedText = self.custom_splitter(lowerText)
         self.tokens = []
+        self.values = []
         for i in range(len(separatedText)):
             tokens = separatedText[i].split(' ')
             typeTokens = []

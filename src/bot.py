@@ -47,6 +47,7 @@ def help(update, context):
 def analyzeUserInput(update, context):
     tokenHandler.tokenize(update, context)
     expressions = taberu.get_tokens()
+    ingredients = []
     ingredients = taberu.get_values()
 
     # run parser for each expression
@@ -67,9 +68,14 @@ def analyzeUserInput(update, context):
         update.message.reply_text("Can I help you with something else? :)")
 
     if parserOut == "ing":
-        recipe = spoonacularAPI.getAPIRequestByIngredient(ingredients[0])
+        recipe = spoonacularAPI.getAPIRequestByIngredient(ingredients[0][0])
         update.message.reply_text(constructRecipeString(recipe))
+        update.message.reply_text("Can I help you with something else? :)")
 
+    if parserOut == "category":
+        recipe = spoonacularAPI.getAPIRequestByIngredient("italian")
+        update.message.reply_text(constructRecipeString(recipe))
+        update.message.reply_text("Can I help you with something else? :)")
 
 
 def constructRecipeString(recipe):

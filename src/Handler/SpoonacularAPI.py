@@ -79,6 +79,12 @@ class SpoonacularAPI:
         recipes = self.getRecipesWithId(dataset_sort)
         return recipes
 
+    def getAPIRequestByCuisine(self, param_cuisine):
+        r = requests.get(base_url + 'complexSearch?apiKey=' + API_KEY + '&cuisine=' + param_cuisine + '&number=1')
+        dataset = json.loads(r.text)
+        recipes = self.getRecipesWithId(dataset['results'])
+        return recipes
+
 
 
 

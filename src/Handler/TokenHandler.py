@@ -36,10 +36,12 @@ class TokenHandler:
         separatedText = self.custom_splitter(lowerText)
         self.tokens = []
         self.values = []
+        self.categories = []
         for i in range(len(separatedText)):
             tokens = separatedText[i].split(' ')
             typeTokens = []
             ingredients = []
+            categories = []
             for token in tokens:
                 if token in self.prepositions:
                     tokens.remove(token)
@@ -49,10 +51,14 @@ class TokenHandler:
                         typeTokens.append(kwType)  # if its not a keyword, ignore it
                     if kwType == "ing":
                         ingredients.append(token)
+                    if kwType == "category":
+                        categories.append(token)
             self.tokens.append(typeTokens)
             self.values.append(ingredients)
+            self.categories.append(categories)
         self.model.set_tokens(self.tokens)
         self.model.set_values(self.values)
+        self.model.set_categories(self.categories)
         # update.message.reply_text(self.tokens)
         return
 

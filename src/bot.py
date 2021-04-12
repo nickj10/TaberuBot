@@ -55,9 +55,8 @@ def analyzeUserInput(update, context):
         parserOut = tokenHandler.parse_tokens(expr)
         logger.info("The parsed output is %s", parserOut)
         if parserOut == "bye":
-            update.message.reply_text("Goodbye!")
+            update.message.reply_text("Goodbye, see you soon!")
         elif parserOut == "hello":
-            if expressions.len == 1:  # only send this message if there's only one expression
                 update.message.reply_text("How can I help you?")
         else:
             update.message.reply_text("Hold on for a second! Searching for recipes...")
@@ -65,11 +64,13 @@ def analyzeUserInput(update, context):
     if parserOut == "random":
         recipe = spoonacularAPI.getAPIRequestRandom()
         update.message.reply_text(constructRecipeString(recipe))
+        update.message.reply_text("Can I help you with something else? :)")
 
-    ing_nouns = ['ingredient', 'element', 'component', 'material']
-    if parserOut in ing_nouns:
-        recipe = spoonacularAPI.getAPIRequestByIngredient("eggs")
+    if parserOut == "ing":
+        recipe = spoonacularAPI.getAPIRequestByIngredient(ingredients[0])
         update.message.reply_text(constructRecipeString(recipe))
+
+
 
 def constructRecipeString(recipe):
     h1 = "Here's a recipe that I can recommend: " + recipe.title + "\n"

@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class ParserHandler:
-    Terminals = ["hello", "verb", "gen", "ingredients", "random", "class", "category", "final", "bye"]
+    Terminals = ["hello", "verb", "gen", "ing", "random", "class", "category", "final", "bye"]
     noTerminals = ["START", "INTRO", "DATA", "PHRASE", "NOMINAL", "FUNCTION", "GEN", "ING"]
     table = [["INTRO", "PHRASE", "NOMINAL", None, "FUNCTION", "FUNCTION", "FUNCTION", None, "bye"],
              ["hello DATA", None, None, None, None, None, None, None, None],
@@ -17,7 +17,7 @@ class ParserHandler:
              [None, None, "gen ING", None, "FUNCTION", "FUNCTION", "FUNCTION", None, None],
              [None, None, None, None, "random GEN", "class GEN", "category GEN", "final", None],
              [None, None, "gen", None, None, None, None, None, None],
-             [None, None, None, "ingredients", None, None, None, None, None]
+             [None, None, None, "ing", None, None, None, None, None]
              ]
 
     def __init__(self, model):
@@ -48,7 +48,7 @@ class ParserHandler:
                     elif tokens[len(tokens) - 3] == "category":
                         return "category"
                     elif tokens[len(tokens) - 3] == "gen":
-                        return ("ingredients")
+                        return "ing"
                     else:
                         return "random"
 

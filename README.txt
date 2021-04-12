@@ -33,4 +33,14 @@ Funcionalidades
 * Pedir receta según clase (sopa, ensalada, ...) (Ej: I want a drink recipe...)
 * Pedir receta según ingredientes (actualmente solo 1 ingrediente) (Ej: I want a recipe with eggs, ...)
 
+Script ejemplo:
+-Hello Taberubot!
+-I want a random recipe
+-Thinking about it better send me a recipe with pork
+-Thank you very much now I need a dessert recipe
+-What can I eat for lunch?
+-What are you doing?
+-Oh yes almost forgot I want a drink recipe
+-No thank u goodbye
+
 En keywords.txt están los verbos, ingredientes, clases de comida, ... que acepta el bot

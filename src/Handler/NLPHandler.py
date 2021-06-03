@@ -49,3 +49,18 @@ class NLPHandler:
 
     def LemNormalize(self, text):
         return self.LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
+
+    def if_food(self, word):
+        syns = wn.synsets(str(word), pos=wn.NOUN)
+        for syn in syns:
+            if 'food' in syn.lexname():
+                return 1
+        return 0
+
+    def greeting(self, sentence):
+        GREETING_INPUTS = ("hello", "hi", "greetings", "sup", "what's up", "hey",)
+        GREETING_RESPONSES = ["hi", "hey", "*nods*", "hi there", "hello", "I am glad! You are talking to me"]
+
+        for word in sentence.split():
+            if word.lower() in GREETING_INPUTS:
+                return random.choice(GREETING_RESPONSES)

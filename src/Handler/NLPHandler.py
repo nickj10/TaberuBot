@@ -1,5 +1,6 @@
 import nltk
-from nltk.corpus import stopwords
+import random
+from nltk.corpus import stopwords, wordnet as wn
 import string  # to process standard python strings
 
 lemmer = nltk.stem.WordNetLemmatizer()
@@ -34,6 +35,13 @@ class NLPHandler:
             #        filtered_sentence.append(w)
 
             print("Filtered {}".format(filtered_sentence))
+
+            # food = wn.synset('food.n.02')
+            # food_list = list(set([w for s in food.closure(lambda s: s.hyponyms()) for w in s.lemma_names()]))
+
+            for filtered in filtered_sentence:
+                if self.if_food(filtered) == 1:
+                    print(filtered, "is food")
 
     # WordNet is a semantically-oriented dictionary of English included in NLTK.
     def LemTokens(self, tokens):

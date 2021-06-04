@@ -18,7 +18,7 @@ bot.
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from Handler import TokenHandler, TaberuManager, ParserHandler, SpoonacularAPI
+from Handler import TokenHandler, TaberuManager, ParserHandler, SpoonacularAPI, NLPHandler
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -31,6 +31,8 @@ taberu = TaberuManager()
 parser = ParserHandler(taberu)
 tokenHandler = TokenHandler(taberu, parser)
 spoonacularAPI = SpoonacularAPI()
+nlpHandler = NLPHandler()
+
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
@@ -45,6 +47,10 @@ def help(update, context):
 
 
 def analyzeUserInput(update, context):
+    nlpHandler.analyzeText(update, context)
+
+
+def analyzeUserInputV2(update, context):
     tokenHandler.tokenize(update, context)
     expressions = taberu.get_tokens()
     ingredients = []
@@ -62,7 +68,7 @@ def analyzeUserInput(update, context):
         if parserOut == "bye":
             update.message.reply_text("Goodbye, see you soon!")
         elif parserOut == "hello":
-                update.message.reply_text("How can I help you?")
+            update.message.reply_text("How can I help you?")
         elif parserOut != "random" and parserOut != "ing" and parserOut != "category" and parserOut != "class":
             update.message.reply_text("I'm sorry, I didn't understand you. Can you put it another way? :) ")
         else:
@@ -84,15 +90,15 @@ def analyzeUserInput(update, context):
             update.message.reply_text("Can I help you with something else? :)")
 
 
-
 def constructRecipeString(recipe):
     h1 = "Here's a recipe that I can recommend: " + recipe.title + "\n"
-    h2 = "\nIt can be prepared in " + str(recipe.readyInMinutes) + " minutes and for up to " + str(recipe.servings) + " servings!"
+    h2 = "\nIt can be prepared in " + str(recipe.readyInMinutes) + " minutes and for up to " + str(
+        recipe.servings) + " servings!"
     bodyIng = "\n\nIngredients: \n"
     for ing in recipe.ingredients:
         bodyIng = bodyIng + "\t " + ing.name + " - " + str(ing.amount) + " " + str(ing.unit) + "\n"
     bodyLink = "\nHere's how you can prepare it: " + recipe.sourceUrl + "\n"
-    return h1+h2+bodyIng+bodyLink
+    return h1 + h2 + bodyIng + bodyLink
 
 
 def error(update, context):

@@ -17,7 +17,7 @@ class ParserHandler:
              [None, None, "gen ING", None, "FUNCTION", "FUNCTION", "FUNCTION", None, None],
              [None, None, None, None, "random GEN", "class GEN", "category GEN", "final", None],
              [None, None, "gen", None, None, None, None, None, None],
-             [None, None, None, "ing", None, None, None, None, None]
+             [None, None, None, "ing", None, None, None, "final", None]
              ]
 
     def __init__(self, model):

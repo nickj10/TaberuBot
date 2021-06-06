@@ -2,7 +2,14 @@ import nltk
 import random
 from nltk.corpus import stopwords, wordnet as wn
 import string  # to process standard python strings
+import logging
 
+# Enable logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Enable lemmer and punctuation removal
 lemmer = nltk.stem.WordNetLemmatizer()
 remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 
@@ -40,8 +47,16 @@ class NLPHandler:
             # food_list = list(set([w for s in food.closure(lambda s: s.hyponyms()) for w in s.lemma_names()]))
 
             for filtered in filtered_sentence:
+                # check the tokens
                 if self.if_food(filtered) == 1:
                     print(filtered, "is food")
+
+            # check if it's a greeting
+            greeting_response = self.greeting(filtered_sentence)
+            if greeting_response:
+                update.message.reply_text(greeting_response)
+            else:
+                logger.warning("The greeting message response is empty.")
 
     # WordNet is a semantically-oriented dictionary of English included in NLTK.
     def LemTokens(self, tokens):
@@ -58,9 +73,9 @@ class NLPHandler:
         return 0
 
     def greeting(self, sentence):
-        GREETING_INPUTS = ("hello", "hi", "greetings", "sup", "what's up", "hey",)
+        GREETING_INPUTS = ("hello", "hi", "greetings", "sup", "what's up", "hey")
         GREETING_RESPONSES = ["hi", "hey", "*nods*", "hi there", "hello", "I am glad! You are talking to me"]
 
-        for word in sentence.split():
+        for word in sentence:
             if word.lower() in GREETING_INPUTS:
                 return random.choice(GREETING_RESPONSES)

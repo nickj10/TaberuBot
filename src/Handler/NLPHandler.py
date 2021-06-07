@@ -26,10 +26,11 @@ class NLPHandler:
         word_tokens = nltk.word_tokenize(raw)  # converts to list of words
         print(sent_tokens)
         print(word_tokens)
-        #tags_list contain tags from every phrase
+        #tags_list contains tags from every phrase
         tags_list = []
         semantic_list = []
         for phrase in sent_tokens:
+
             result = self.LemNormalize(phrase)
             print("Result {}".format(result))
             #Tags (tuple) contains token and his grammar category
@@ -37,7 +38,12 @@ class NLPHandler:
             i = 0
             for w in result:
                 if w not in self.stop_words:
-                    i = i + 1
+                    #Filtering: nos quedamos solo con las categorias que queremos
+                    if tags[i][1] != "VB" and tags[i][1] != "VBP" and tags[i][1] != "JJ" and tags[i][1] != "NN":
+                        tags.pop(i)
+                    else:
+                        i = i + 1
+
                 else:
                     tags.pop(i)
             print(tags)
@@ -83,6 +89,8 @@ class NLPHandler:
                 return True
 
         return False
+
+
 
     def if_requestVerb(self, word):
         syns = wn.synsets(str(word))
@@ -133,13 +141,19 @@ class NLPHandler:
 
         return 0
 
-    def greeting(self, sentence):
-        GREETING_INPUTS = ("hello", "hi", "greetings", "sup", "what's up", "hey",)
+    def if_greeting(self, word):
         GREETING_RESPONSES = ["hi", "hey", "*nods*", "hi there", "hello", "I am glad! You are talking to me"]
+        syns = wn.synsets(str(word))
+        for syn in syns:
+            if 'communication' in syn.lexname():
+                print(word)
+                return True, random.choice(GREETING_RESPONSES)
 
-        for word in sentence.split():
-            if word.lower() in GREETING_INPUTS:
-                return random.choice(GREETING_RESPONSES)
+        return False, ""
+
+
+
+
 
 
     def checkLanguage(self, message):

@@ -163,6 +163,7 @@ class NLPHandler:
         for word in tokens:
             if word.lower() in GREETING_INPUTS:
                 return True, random.choice(GREETING_RESPONSES) + " " + update.message.from_user.first_name
+        return False, ""
 
 
     def checkLanguage(self, message):

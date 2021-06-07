@@ -14,7 +14,7 @@ class ParserHandler:
 
     #Atributo v1
     grammar = nltk.CFG.fromstring("""
-      P -> SV O
+      P -> "NN" SV O | SV O
       SV -> V | V V
       V -> "VB" | "VBP"
       O -> "JJ" SN | SN
@@ -92,7 +92,7 @@ class ParserHandler:
         else:
             print("Error: sintaxis")
 
-        return False, -1, args
+        return False, -1, ""
 
 
 

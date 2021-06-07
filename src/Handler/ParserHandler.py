@@ -52,7 +52,7 @@ class ParserHandler:
         #TODO: semantic analysis
         function_id = -1
         if not "verb" in tokens:
-            return -1
+            return False, -1
         if "random" in tokens:
             function_id = 0
         elif "food" in tokens:
@@ -62,15 +62,20 @@ class ParserHandler:
         else:
             function_id = 0
 
-        return function_id
+        return True, function_id
 
-    def createArguments(self, tags, semantics):
+    def createArguments(self, tags, semantics, function_id):
         i = 0
+        str1 = ""
         for tag in tags :
-            if semantics[i] == "food":
-
-            if semantics[i] == "cuisine" :
-                #
+            if function_id == 1:
+                if semantics[i] == "food":
+                    str1 = str1 + ",+" + tag[0]
+            elif function_id == 2:
+                if semantics[i] == "cuisine":
+                    str1 = tag[0]
+            i += 1
+        return str1
 
 
     def parse(self, tags, semantics):
@@ -82,17 +87,16 @@ class ParserHandler:
         gram_ok = self.syntaxAnalysis(tokens)
         if gram_ok:
             print("gram ok")
-            sem_ok = True
-            function_id = self.semanticAnalysis(semantics)
-            args = createArguments(tags, semantics)
+            sem_ok, function_id = self.semanticAnalysis(semantics)
+            args = self.createArguments(tags, semantics, function_id)
             if sem_ok:
                 print(function_id)
-                return True, function_id
+                return True, function_id, args
             print("Error: semantic")
         else:
             print("Error: sintaxis")
 
-        return False, -1
+        return False, -1, args
 
     def parseV2(self, tokens):
         stack = ["START"]  # initialize stack

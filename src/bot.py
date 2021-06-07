@@ -45,13 +45,13 @@ def help(update, context):
     """Send a message when the command /help is issued."""
     update.message.reply_text('Help!')
 
-def executeUserRequest(function_id):
+def executeUserRequest(function_id, args):
     if function_id == 0:
         return spoonacularAPI.getAPIRequestRandom()
     elif function_id == 1:
-        return spoonacularAPI.getAPIRequestByIngredient("cheese,+potato")
+        return spoonacularAPI.getAPIRequestByIngredient(args)
     elif function_id == 2:
-        return spoonacularAPI.getAPIRequestByCuisine("italian")
+        return spoonacularAPI.getAPIRequestByCuisine(args)
     else:
         return None
 
@@ -65,9 +65,9 @@ def analyzeUserInput(update, context):
     for tags in tags_list:
         args = []
         function_id = -1
-        ok, function_id = parser.parse(tags, semantic_list[i])
+        ok, function_id, args = parser.parse(tags, semantic_list[i])
         if ok:
-            recipe = executeUserRequest(function_id)
+            recipe = executeUserRequest(function_id, args)
             if recipe == None:
                 update.message.reply_text("No te he entendido")
             else:

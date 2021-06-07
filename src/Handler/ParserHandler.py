@@ -1,4 +1,6 @@
 import logging
+import nltk
+from langdetect import detect
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -8,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class ParserHandler:
+    #Inicio atributos v2
     Terminals = ["hello", "verb", "gen", "ing", "random", "class", "category", "final", "bye"]
     noTerminals = ["START", "INTRO", "DATA", "PHRASE", "NOMINAL", "FUNCTION", "GEN", "ING"]
     table = [["INTRO", "PHRASE", "NOMINAL", None, "FUNCTION", "FUNCTION", "FUNCTION", None, "bye"],
@@ -17,13 +20,71 @@ class ParserHandler:
              [None, None, "gen ING", None, "FUNCTION", "FUNCTION", "FUNCTION", None, None],
              [None, None, None, None, "random GEN", "class GEN", "category GEN", "final", None],
              [None, None, "gen", None, None, None, None, None, None],
-             [None, None, None, "ing", None, None, None, "final", None]
+             [None, None, None, "ing", None, None, None, None, None]
              ]
+    #Fin atributos v2
+
+    #Atributo v1
+    grammar = nltk.CFG.fromstring("""
+      P -> SV O
+      SV -> V | V V
+      V -> "VB" | "VBP"
+      O -> "JJ" SN | SN
+      SN -> "NN" SN | "NN"
+      """)
+
 
     def __init__(self, model):
         self.model = model
+        self.rd_parser = nltk.RecursiveDescentParser(self.grammar)
 
-    def parse(self, tokens):
+    def syntaxAnalysis(self, tokens):
+        try:
+            trees = self.rd_parser.parse(tokens)
+            for tree in trees:
+                print(tree)
+                return True
+        except:
+            print("Error: hay tokens no incluidos gramatica")
+        return False
+
+    def semanticAnalysis(self, tokens):
+        #TODO: semantic analysis
+        function_id = -1
+        if not "verb" in tokens:
+            return -1
+        if "random" in tokens:
+            function_id = 0
+        elif "food" in tokens:
+            function_id = 1
+        elif "cuisine" in tokens:
+            function_id = 2
+        else:
+            function_id = 0
+
+        return function_id
+
+    def parse(self, tags, semantics):
+        tokens = []
+        #Recuperamos categorias gramaticales de los tags
+        for tag in tags:
+            tokens.append(tag[1])
+
+        gram_ok = self.syntaxAnalysis(tokens)
+        if gram_ok:
+            print("gram ok")
+            sem_ok = True
+            function_id = self.semanticAnalysis(semantics)
+            if sem_ok:
+                print(function_id)
+                return True, function_id
+            print("Error: semantic")
+        else:
+            print("Error: sintaxis")
+
+        return False, -1
+
+    def parseV2(self, tokens):
         stack = ["START"]  # initialize stack
         flag = True
         counter = 0
@@ -33,7 +94,6 @@ class ParserHandler:
             return "bye"
 
         if tokens[0] == "final":
-
             return "ko"
         while counter < len(tokens):
 
@@ -90,55 +150,62 @@ class ParserHandler:
             else:
                 logging.warning("The error is not in the grammar.")
 
-    def getnoTermIndex(self, noTerm):
-        for i in range(len(self.noTerminals)):
-            if self.noTerminals[i] == noTerm:
-                return i
-        return -1
 
-    def getTermIndex(self, Term):
-        for i in range(len(self.Terminals)):
-            if self.Terminals[i] == Term:
-                return i
-        return -1
+def getnoTermIndex(self, noTerm):
+    for i in range(len(self.noTerminals)):
+        if self.noTerminals[i] == noTerm:
+            return i
+    return -1
 
-    def checkNoTerminal(self, top):
-        for t in self.noTerminals:
-            if t == top:
-                return True
-        return False
 
-    def checkTerminal(self, top):
-        for t in self.Terminals:
-            if t == top:
-                return True
-        return False
+def getTermIndex(self, Term):
+    for i in range(len(self.Terminals)):
+        if self.Terminals[i] == Term:
+            return i
+    return -1
 
-    def checkIfKeyword(self, token):
-        isKey = False
-        keywordType = ""
-        if token in self.model.get_verbs():
-            isKey = True
-            keywordType = "verb"
-        elif token in self.model.ing_nouns:
-            isKey = True
-            keywordType = "ing"
-        elif token in self.model.random_nouns:
-            isKey = True
-            keywordType = "random"
-        elif token in self.model.category_nouns:
-            isKey = True
-            keywordType = "category"
-        elif token in self.model.class_nouns:
-            isKey = True
-            keywordType = "class"
-        elif token in self.model.intro_nouns:
-            isKey = True
-            keywordType = "hello"
-        elif token in self.model.exit_nouns:
-            isKey = True
-            keywordType = "bye"
-        elif token in self.model.general_nouns:
-            isKey = True
-            keywordType = "gen"
-        return isKey, keywordType
+
+def checkNoTerminal(self, top):
+    for t in self.noTerminals:
+        if t == top:
+            return True
+    return False
+
+
+def checkTerminal(self, top):
+    for t in self.Terminals:
+        if t == top:
+            return True
+    return False
+
+
+def checkIfKeyword(self, token):
+    isKey = False
+    keywordType = ""
+    if token in self.model.get_verbs():
+        isKey = True
+        keywordType = "verb"
+    elif token in self.model.ing_nouns:
+        isKey = True
+        keywordType = "ing"
+    elif token in self.model.random_nouns:
+        isKey = True
+        keywordType = "random"
+    elif token in self.model.category_nouns:
+        isKey = True
+        keywordType = "category"
+    elif token in self.model.class_nouns:
+        isKey = True
+        keywordType = "class"
+    elif token in self.model.intro_nouns:
+        isKey = True
+        keywordType = "hello"
+    elif token in self.model.exit_nouns:
+        isKey = True
+        keywordType = "bye"
+    elif token in self.model.general_nouns:
+        isKey = True
+        keywordType = "gen"
+    return isKey, keywordType
+
+

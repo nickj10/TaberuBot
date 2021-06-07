@@ -6,6 +6,7 @@ from Model.InstructionStep import InstructionStep
 from Model.Instruction import Instruction
 from Model.Recipe import Recipe
 from decouple import config
+import random
 
 API_KEY = config('KEY')
 base_url = 'https://api.spoonacular.com/recipes/'
@@ -21,7 +22,8 @@ class SpoonacularAPI:
     def getRecipesWithId(self, dataset_sort):
         #arr_possible_recipes = []
         #for recipe in dataset_sort:
-        id = str(dataset_sort[0]['id'])
+        n = random.randint(0, 19)
+        id = str(dataset_sort[n]['id'])
         r = requests.get(base_url + id + '/information?apiKey=' + API_KEY)
         recipe_data = json.loads(r.text)
 
@@ -72,21 +74,22 @@ class SpoonacularAPI:
         return self.getRecipeInfo(dataset)
 
     def getAPIRequestByIngredient(self, param_ing):
-        r = requests.get(base_url + 'findByIngredients?apiKey=' + API_KEY + '&ingredients=' + param_ing)
+        r = requests.get(base_url + 'findByIngredients?apiKey=' + API_KEY + '&ingredients=' + param_ing+ "&number=20")
         dataset = json.loads(r.text)
         #Returns sorted recipes by Likes.
-        dataset_sort = sorted(dataset, key=self.sortRecipeRankingByLikes, reverse=True)
-        recipes = self.getRecipesWithId(dataset_sort)
+        #dataset_sort = self.selectIdRandom(dataset)
+        #dataset_sort = sorted(dataset, key=self.sortRecipeRankingByLikes, reverse=True)
+        recipes = self.getRecipesWithId(dataset)
         return recipes
 
     def getAPIRequestByCuisine(self, param_cuisine):
-        r = requests.get(base_url + 'complexSearch?apiKey=' + API_KEY + '&cuisine=' + param_cuisine + '&number=1')
+        r = requests.get(base_url + 'complexSearch?apiKey=' + API_KEY + '&cuisine=' + param_cuisine + '&number=20')
         dataset = json.loads(r.text)
         recipes = self.getRecipesWithId(dataset['results'])
         return recipes
 
     def getAPIRequestByClass(self, param_class):
-        r = requests.get(base_url + 'complexSearch?apiKey=' + API_KEY + '&type=' + param_class + '&number=1')
+        r = requests.get(base_url + 'complexSearch?apiKey=' + API_KEY + '&type=' + param_class + '&number=20')
         dataset = json.loads(r.text)
         recipes = self.getRecipesWithId(dataset['results'])
         return recipes

@@ -45,9 +45,36 @@ def help(update, context):
     """Send a message when the command /help is issued."""
     update.message.reply_text('Help!')
 
+def executeUserRequest(function_id):
+    if function_id == 0:
+        return spoonacularAPI.getAPIRequestRandom()
+    elif function_id == 1:
+        return spoonacularAPI.getAPIRequestByIngredient("cheese,+potato")
+    elif function_id == 2:
+        return spoonacularAPI.getAPIRequestByCuisine("italian")
+    else:
+        return None
+
 
 def analyzeUserInput(update, context):
-    nlpHandler.analyzeText(update, context)
+    #obj = spoonacularAPI.getAPIRequestByCuisine("spanish")
+    #print("deu")
+    tags_list, semantic_list = nlpHandler.analyzeText(update, context)
+    ok = False
+    i = 0
+    for tags in tags_list:
+        args = []
+        function_id = -1
+        ok, function_id = parser.parse(tags, semantic_list[i])
+        if ok:
+            recipe = executeUserRequest(function_id)
+            if recipe == None:
+                update.message.reply_text("No te he entendido")
+            else:
+                update.message.reply_text(constructRecipeString(recipe))
+                update.message.reply_text("Can I help you with something else? :)")
+        i = i + 1
+
 
 
 def analyzeUserInputV2(update, context):

@@ -43,7 +43,16 @@ def start(update, context):
 
 def help(update, context):
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
+    str = "What can this bot do? \nThis a bot that helps you find delicious recipes in a blink of an eye!\n\n " \
+            + "Commands: \n" + "\t/start: to ask for a recipe.\n\t/info: to get to know about my developers."
+    update.message.reply_text(str)
+
+def info_command(update, context):
+    """Send a message when the command /info is issued."""
+    str = "Taberu Bot is an open source chatbot. It's free with an unlimited service, plus it will help you make delicious recipes!" \
+        + "\n\nDevelopers:\nOmar Ntifi\nNicole Marie Jimenez\nKaye Ann Ignacio\n\n" \
+        + "Leave them some feedback, they will be glad to hear from you!\nhttps://github.com/nickj10/TaberuBot"
+    update.message.reply_text(str)
 
 def executeUserRequest(function_id, args):
     if function_id == 0:
@@ -146,6 +155,7 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(CommandHandler("info", info_command))
 
     # initialize keywords
     tokenHandler.parse_keywords()

@@ -10,6 +10,17 @@ remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 
 GREETING_INPUTS = ["hello", "hi", "greetings", "sup", "howdy", "hey", "yo", "yow"]
 GREETING_RESPONSES = ["Hello there", "Hi", "Hi there", "Hello", "Hey"]
+NOT_UNDERSTANDABLE_RESPONSES = ["I'm sorry, I didn't understand you. Can you put it another way? :) ",
+                                "Sorry, I’m afraid I don’t follow you.",
+                                "Excuse me, could you repeat it?",
+                                "I’m sorry, I don’t understand. Could you say it again?",
+                                "I’m sorry, I didn’t catch that. Would you mind saying it again?",
+                                "I’m confused. Could you rephrase it for me?",
+                                "Sorry, I didn’t understand. Could you say it in a different way?,"
+                                "I didn’t hear you. Say again?"]
+
+ERROR_MESSAGES = ["Oops, I think there was an error. Please try again later.", "Sorry, TaberuBot is under maintenance.",
+                  "Please try again in a few minutes.", "Sorry, there was an error. Try again later."]
 
 class NLPHandler:
     language="en"
@@ -158,3 +169,9 @@ class NLPHandler:
         if lang != "es" and lang != "en":
             return "Error, language not recognized"
         return message
+
+    def sendRandomNotUnderstandable(self):
+        return random.choice(NOT_UNDERSTANDABLE_RESPONSES)
+
+    def sendRandomErrorMessage(self):
+        return random.choice(ERROR_MESSAGES)

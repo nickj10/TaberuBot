@@ -17,7 +17,6 @@ bot.
 
 import logging
 
-import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from Handler import TokenHandler, TaberuManager, ParserHandler, SpoonacularAPI, NLPHandler
 

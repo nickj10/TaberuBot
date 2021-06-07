@@ -27,9 +27,10 @@ class ParserHandler:
     #Atributo v1
     grammar = nltk.CFG.fromstring("""
       P -> SV O
-      SV -> "v" "v" | "v"
-      O -> "adj" SN | SN
-      SN -> "n" SN | "n"
+      SV -> V | V V
+      V -> "VB" | "VBP"
+      O -> "JJ" SN | SN
+      SN -> "NN" SN | "NN"
       """)
 
 
@@ -49,26 +50,39 @@ class ParserHandler:
 
     def semanticAnalysis(self, tokens):
         #TODO: semantic analysis
-        try:
-            trees = self.rd_parser.parse(tokens)
-            for tree in trees:
-                print(tree)
-                return True
-        except:
-            print("Error: hay tokens no incluidos gramatica")
-        return False
+        function_id = -1
+        if not "verb" in tokens:
+            return -1
+        if "random" in tokens:
+            function_id = 0
+        elif "food" in tokens:
+            function_id = 1
+        elif "cuisine" in tokens:
+            function_id = 2
+        else:
+            function_id = 0
 
-    def parse(self, tokens):
+        return function_id
+
+    def parse(self, tags, semantics):
+        tokens = []
+        #Recuperamos categorias gramaticales de los tags
+        for tag in tags:
+            tokens.append(tag[1])
+
         gram_ok = self.syntaxAnalysis(tokens)
         if gram_ok:
             print("gram ok")
-            sem_ok = self.semanticAnalysis(tokens)
+            sem_ok = True
+            function_id = self.semanticAnalysis(semantics)
             if sem_ok:
-                return True
+                print(function_id)
+                return True, function_id
             print("Error: semantic")
         else:
             print("Error: sintaxis")
-        return False
+
+        return False, -1
 
     def parseV2(self, tokens):
         stack = ["START"]  # initialize stack

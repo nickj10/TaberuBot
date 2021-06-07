@@ -8,6 +8,19 @@ from googletrans import Translator
 lemmer = nltk.stem.WordNetLemmatizer()
 remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 
+GREETING_INPUTS = ["hello", "hi", "greetings", "sup", "howdy", "hey", "yo", "yow"]
+GREETING_RESPONSES = ["Hello there", "Hi", "Hi there", "Hello", "Hey"]
+NOT_UNDERSTANDABLE_RESPONSES = ["I'm sorry, I didn't understand you. Can you put it another way? :) ",
+                                "Sorry, I’m afraid I don’t follow you.",
+                                "Excuse me, could you repeat it?",
+                                "I’m sorry, I don’t understand. Could you say it again?",
+                                "I’m sorry, I didn’t catch that. Would you mind saying it again?",
+                                "I’m confused. Could you rephrase it for me?",
+                                "Sorry, I didn’t understand. Could you say it in a different way?,"
+                                "I didn’t hear you. Say again?"]
+
+ERROR_MESSAGES = ["Oops, I think there was an error. Please try again later.", "Sorry, TaberuBot is under maintenance.",
+                  "Please try again in a few minutes.", "Sorry, there was an error. Try again later."]
 
 class NLPHandler:
     language="en"
@@ -36,6 +49,12 @@ class NLPHandler:
             #Tags (tuple) contains token and his grammar category
             tags = nltk.pos_tag(result)
             i = 0
+
+            # Check if the user sent some greetings
+            isGreeting, message = self.is_greeting(update, result)
+            if isGreeting:
+                update.message.reply_text(message)
+
             for w in result:
                 if w not in self.stop_words:
                     #Filtering: nos quedamos solo con las categorias que queremos
@@ -140,19 +159,10 @@ class NLPHandler:
 
         return 0
 
-    def if_greeting(self, word):
-        GREETING_RESPONSES = ["hi", "hey", "*nods*", "hi there", "hello", "I am glad! You are talking to me"]
-        syns = wn.synsets(str(word))
-        for syn in syns:
-            if 'communication' in syn.lexname():
-                print(word)
-                return True, random.choice(GREETING_RESPONSES)
-
-        return False, ""
-
-
-
-
+    def is_greeting(self, update, tokens):
+        for word in tokens:
+            if word.lower() in GREETING_INPUTS:
+                return True, random.choice(GREETING_RESPONSES) + " " + update.message.from_user.first_name
 
 
     def checkLanguage(self, message):
@@ -166,3 +176,9 @@ class NLPHandler:
         if lang != "es" and lang != "en":
             return "Error, language not recognized"
         return message
+
+    def sendRandomNotUnderstandable(self):
+        return random.choice(NOT_UNDERSTANDABLE_RESPONSES)
+
+    def sendRandomErrorMessage(self):
+        return random.choice(ERROR_MESSAGES)

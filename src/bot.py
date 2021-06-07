@@ -78,10 +78,12 @@ def analyzeUserInput(update, context):
         if ok:
             recipe = executeUserRequest(function_id, args)
             if recipe == None:
-                update.message.reply_text("No te he entendido")
+                update.message.reply_text(nlpHandler.sendRandomNotUnderstandable())
             else:
                 update.message.reply_text(constructRecipeString(recipe))
                 update.message.reply_text("Can I help you with something else? :)")
+        else:
+            update.message.reply_text(nlpHandler.sendRandomErrorMessage())
         i = i + 1
 
 

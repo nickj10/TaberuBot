@@ -18,7 +18,7 @@ bot.
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from Handler import TokenHandler, TaberuManager, ParserHandler, SpoonacularAPI, NLPHandler
+from Handler import ParserHandler, SpoonacularAPI, NLPHandler
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -27,9 +27,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # initialize MVC
-taberu = TaberuManager()
-parser = ParserHandler(taberu)
-tokenHandler = TokenHandler(taberu, parser)
+parser = ParserHandler()
 spoonacularAPI = SpoonacularAPI()
 nlpHandler = NLPHandler()
 
@@ -52,6 +50,8 @@ def executeUserRequest(function_id, args):
         return spoonacularAPI.getAPIRequestByIngredient(args)
     elif function_id == 2:
         return spoonacularAPI.getAPIRequestByCuisine(args)
+    elif function_id == 3:
+        return spoonacularAPI.getAPIRequestByClass(args)
     else:
         return None
 
@@ -76,45 +76,6 @@ def analyzeUserInput(update, context):
         i = i + 1
 
 
-
-def analyzeUserInputV2(update, context):
-    tokenHandler.tokenize(update, context)
-    expressions = taberu.get_tokens()
-    ingredients = []
-    ingredients = taberu.get_values()
-    cuisines = taberu.get_categories()
-    types = taberu.get_classes()
-
-    # run parser for each expression
-    for expr in expressions:
-
-        expr.append("final")
-        parserOut = tokenHandler.parse_tokens(expr)
-
-        logger.info("The parsed output is %s", parserOut)
-        if parserOut == "bye":
-            update.message.reply_text("Goodbye, see you soon!")
-        elif parserOut == "hello":
-            update.message.reply_text("How can I help you?")
-        elif parserOut != "random" and parserOut != "ing" and parserOut != "category" and parserOut != "class":
-            update.message.reply_text("I'm sorry, I didn't understand you. Can you put it another way? :) ")
-        else:
-            update.message.reply_text("Hold on for a second! Searching for recipes...")
-
-            if parserOut == "random":
-                recipe = spoonacularAPI.getAPIRequestRandom()
-
-            if parserOut == "ing":
-                recipe = spoonacularAPI.getAPIRequestByIngredient(ingredients[0][0])
-
-            if parserOut == "category":
-                recipe = spoonacularAPI.getAPIRequestByCuisine(cuisines[0][0])
-
-            if parserOut == "class":
-                recipe = spoonacularAPI.getAPIRequestByClass(types[0][0])
-
-            update.message.reply_text(constructRecipeString(recipe))
-            update.message.reply_text("Can I help you with something else? :)")
 
 
 def constructRecipeString(recipe):
@@ -147,8 +108,7 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
 
-    # initialize keywords
-    tokenHandler.parse_keywords()
+
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, analyzeUserInput))

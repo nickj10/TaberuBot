@@ -43,7 +43,6 @@ class NLPHandler:
                         tags.pop(i)
                     else:
                         i = i + 1
-
                 else:
                     tags.pop(i)
             print(tags)

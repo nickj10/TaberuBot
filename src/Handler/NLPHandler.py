@@ -9,7 +9,7 @@ lemmer = nltk.stem.WordNetLemmatizer()
 remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 
 GREETING_INPUTS = ["hello", "hi", "greetings", "sup", "howdy", "hey", "yo", "yow"]
-GREETING_RESPONSES = ["Hello there!", "Hi", "Hi there", "Hello", "Hey!"]
+GREETING_RESPONSES = ["Hello there", "Hi", "Hi there", "Hello", "Hey"]
 
 class NLPHandler:
     language="en"
@@ -39,7 +39,7 @@ class NLPHandler:
             i = 0
 
             # Check if the user sent some greetings
-            isGreeting, message = self.is_greeting(result)
+            isGreeting, message = self.is_greeting(update, result)
             if isGreeting:
                 update.message.reply_text(message)
 
@@ -141,10 +141,10 @@ class NLPHandler:
 
         return 0
 
-    def is_greeting(self, tokens):
+    def is_greeting(self, update, tokens):
         for word in tokens:
             if word.lower() in GREETING_INPUTS:
-                return True, random.choice(GREETING_RESPONSES)
+                return True, random.choice(GREETING_RESPONSES) + " " + update.message.from_user.first_name
 
 
     def checkLanguage(self, message):

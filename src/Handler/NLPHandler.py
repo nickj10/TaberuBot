@@ -8,6 +8,8 @@ from googletrans import Translator
 lemmer = nltk.stem.WordNetLemmatizer()
 remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 
+GREETING_INPUTS = ["hello", "hi", "greetings", "sup", "howdy", "hey", "yo", "yow"]
+GREETING_RESPONSES = ["Hello there", "Hi", "Hi there", "Hello", "Hey"]
 
 class NLPHandler:
     language="en"
@@ -35,6 +37,12 @@ class NLPHandler:
             #Tags (tuple) contains token and his grammar category
             tags = nltk.pos_tag(result)
             i = 0
+
+            # Check if the user sent some greetings
+            isGreeting, message = self.is_greeting(update, result)
+            if isGreeting:
+                update.message.reply_text(message)
+
             for w in result:
                 if w not in self.stop_words:
                     i = i + 1
@@ -133,13 +141,10 @@ class NLPHandler:
 
         return 0
 
-    def greeting(self, sentence):
-        GREETING_INPUTS = ("hello", "hi", "greetings", "sup", "what's up", "hey",)
-        GREETING_RESPONSES = ["hi", "hey", "*nods*", "hi there", "hello", "I am glad! You are talking to me"]
-
-        for word in sentence.split():
+    def is_greeting(self, update, tokens):
+        for word in tokens:
             if word.lower() in GREETING_INPUTS:
-                return random.choice(GREETING_RESPONSES)
+                return True, random.choice(GREETING_RESPONSES) + " " + update.message.from_user.first_name
 
 
     def checkLanguage(self, message):

@@ -16,6 +16,7 @@ class NLPHandler:
         nltk.download('punkt')  # first-time use only
         nltk.download('wordnet')  # first-time use only
         nltk.download('stopwords')  # first-time use only
+        nltk.download('averaged_perceptron_tagger')
         self.stop_words = stopwords.words('english')
 
     def analyzeText(self, update, context):

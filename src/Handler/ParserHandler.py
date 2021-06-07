@@ -64,6 +64,15 @@ class ParserHandler:
 
         return function_id
 
+    def createArguments(self, tags, semantics):
+        i = 0
+        for tag in tags :
+            if semantics[i] == "food":
+
+            if semantics[i] == "cuisine" :
+                #
+
+
     def parse(self, tags, semantics):
         tokens = []
         #Recuperamos categorias gramaticales de los tags
@@ -75,6 +84,7 @@ class ParserHandler:
             print("gram ok")
             sem_ok = True
             function_id = self.semanticAnalysis(semantics)
+            args = createArguments(tags, semantics)
             if sem_ok:
                 print(function_id)
                 return True, function_id

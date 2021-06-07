@@ -8,6 +8,7 @@ python-telegram-bot = "*"
 requests = "*"
 python-decouple = "*"
 stopwords = "*"
+googletrans = "*"
 
 [dev-packages]
 

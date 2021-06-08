@@ -10,6 +10,9 @@ remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 
 GREETING_INPUTS = ["hello", "hi", "greetings", "sup", "howdy", "hey", "yo", "yow"]
 GREETING_RESPONSES = ["Hello there", "Hi", "Hi there", "Hello", "Hey"]
+GOODBYE_INPUTS = ["bye", "goodbye"]
+GOODBYE_RESPONSES = ["Goodbye", "Hope I see you soon", "Bye, have a nice day", "Bye, it has been a pleasure"]
+ALREADY_GREETING_RESPONSES = ["Hey, you already greeted me, but nothing happens, I like to talk to you ", "You like to greet people huh? For me the more times the better! ", "Hello again friend! ", "I think you are trying to bug me with so much greeting :( "]
 NOT_UNDERSTANDABLE_RESPONSES = ["I'm sorry, I didn't understand you. Can you put it another way? :) ",
                                 "Sorry, I’m afraid I don’t follow you.",
                                 "Excuse me, could you repeat it?",
@@ -22,6 +25,7 @@ NOT_UNDERSTANDABLE_RESPONSES = ["I'm sorry, I didn't understand you. Can you put
 ERROR_MESSAGES = ["Oops, I think there was an error. Please try again later.", "Sorry, TaberuBot is under maintenance.",
                   "Please try again in a few minutes.", "Sorry, there was an error. Try again later."]
 
+
 class NLPHandler:
     language="en"
 
@@ -33,6 +37,8 @@ class NLPHandler:
         self.stop_words = stopwords.words('english')
         self.waiting_ing = False
         self.waiting_args = ""
+        self.greeting = False
+        self.n_phrases = 0
 
     def analyzeText(self, update, context):
         raw = update.message.text
@@ -56,7 +62,18 @@ class NLPHandler:
             # Check if the user sent some greetings
             isGreeting, message = self.is_greeting(update, result)
             if isGreeting:
+                #Already had a greeting
+                if self.greeting:
+                    update.message.reply_text(random.choice(ALREADY_GREETING_RESPONSES))
+                else:
+                    update.message.reply_text(message)
+                    self.greeting = True
+            isGoodbye, message = self.is_goodbye(update, result)
+            if isGoodbye:
                 update.message.reply_text(message)
+                return False, False
+
+
 
             for w in result:
                 if w not in self.stop_words:
@@ -167,6 +184,13 @@ class NLPHandler:
             if word.lower() in GREETING_INPUTS:
                 return True, random.choice(GREETING_RESPONSES) + " " + update.message.from_user.first_name
         return False, ""
+
+    def is_goodbye(self, update, tokens):
+        for word in tokens:
+            if word.lower() in GOODBYE_INPUTS or self.if_negation(word.lower):
+                return True, random.choice(GOODBYE_RESPONSES) + " " + update.message.from_user.first_name
+        return False, ""
+
 
     def if_negation(self, word):
         syns = wn.synsets(str(word))

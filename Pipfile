@@ -7,6 +7,9 @@ name = "pypi"
 python-telegram-bot = "*"
 requests = "*"
 python-decouple = "*"
+stopwords = "*"
+googletrans = "*"
+langdetect = "*"
 
 [dev-packages]
 

@@ -18,7 +18,7 @@ bot.
 import logging
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from Handler import TokenHandler, TaberuManager, ParserHandler, SpoonacularAPI
+from Handler import ParserHandler, SpoonacularAPI, NLPHandler
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -27,10 +27,10 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # initialize MVC
-taberu = TaberuManager()
-parser = ParserHandler(taberu)
-tokenHandler = TokenHandler(taberu, parser)
+parser = ParserHandler()
 spoonacularAPI = SpoonacularAPI()
+nlpHandler = NLPHandler()
+
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
@@ -41,58 +41,84 @@ def start(update, context):
 
 def help(update, context):
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
+    str = "What can this bot do? \nThis a bot that helps you find delicious recipes in a blink of an eye!\n\n " \
+            + "Commands: \n" + "\t/start: to ask for a recipe.\n\t/info: to get to know about my developers."
+    update.message.reply_text(str)
 
+def info_command(update, context):
+    """Send a message when the command /info is issued."""
+    str = "Taberu Bot is an open source chatbot. It's free with an unlimited service, plus it will help you make delicious recipes!" \
+        + "\n\nDevelopers:\nOmar Ntifi\nNicole Marie Jimenez\nKaye Ann Ignacio\n\n" \
+        + "Leave them some feedback, they will be glad to hear from you!\nhttps://github.com/nickj10/TaberuBot"
+    update.message.reply_text(str)
+
+def executeUserRequest(function_id, args):
+    if function_id == 0:
+        return spoonacularAPI.getAPIRequestRandom()
+    elif function_id == 1:
+        return spoonacularAPI.getAPIRequestByIngredient(args)
+    elif function_id == 2:
+        return spoonacularAPI.getAPIRequestByCuisine(args)
+    elif function_id == 3:
+        return spoonacularAPI.getAPIRequestByClass(args)
+    else:
+        return None
+def sendRecipe(update, context, recipe):
+    if recipe == None:
+        update.message.reply_text(nlpHandler.sendRandomNotUnderstandable())
+    else:
+        update.message.reply_text(constructRecipeString(recipe))
+        update.message.reply_text("Can I help you with something else? :)")
 
 def analyzeUserInput(update, context):
-    tokenHandler.tokenize(update, context)
-    expressions = taberu.get_tokens()
-    ingredients = []
-    ingredients = taberu.get_values()
-    cuisines = taberu.get_categories()
-    types = taberu.get_classes()
 
-    # run parser for each expression
-    for expr in expressions:
+    if nlpHandler.waiting_ing:
+        extra_ings, add = nlpHandler.addMoreIngredients(update.message.text)
+        if not extra_ings and add:
+            update.message.reply_text("Well, I have not understood those ingredients, can you repeat? :)")
+            return
+        nlpHandler.waiting_args = nlpHandler.waiting_args + extra_ings
+        recipe = executeUserRequest(1, args=nlpHandler.waiting_args)
+        nlpHandler.waiting_ing = False
+        nlpHandler.waiting_args = ""
+        sendRecipe(update, context, recipe)
+        return
 
-        expr.append("final")
-        parserOut = tokenHandler.parse_tokens(expr)
-
-        logger.info("The parsed output is %s", parserOut)
-        if parserOut == "bye":
-            update.message.reply_text("Goodbye, see you soon!")
-        elif parserOut == "hello":
-                update.message.reply_text("How can I help you?")
-        elif parserOut != "random" and parserOut != "ing" and parserOut != "category" and parserOut != "class":
-            update.message.reply_text("I'm sorry, I didn't understand you. Can you put it another way? :) ")
+    tags_list, semantic_list = nlpHandler.analyzeText(update, context)
+    ok = False
+    i = 0
+    for tags in tags_list:
+        args = []
+        function_id = -1
+        ok, function_id, args = parser.parse(tags, semantic_list[i])
+        if ok:
+            if function_id == 1:
+                update.message.reply_text("Would you like to add any more ingredients?")
+                nlpHandler.waiting_ing = True
+                nlpHandler.waiting_args = args
+            else:
+                recipe = executeUserRequest(function_id, args)
+                if recipe == None:
+                    update.message.reply_text(nlpHandler.sendRandomNotUnderstandable())
+                else:
+                    update.message.reply_text(constructRecipeString(recipe))
+                    update.message.reply_text("Can I help you with something else? :)")
         else:
-            update.message.reply_text("Hold on for a second! Searching for recipes...")
+            update.message.reply_text(nlpHandler.sendRandomErrorMessage())
+        i = i + 1
 
-            if parserOut == "random":
-                recipe = spoonacularAPI.getAPIRequestRandom()
-
-            if parserOut == "ing":
-                recipe = spoonacularAPI.getAPIRequestByIngredient(ingredients[0][0])
-
-            if parserOut == "category":
-                recipe = spoonacularAPI.getAPIRequestByCuisine(cuisines[0][0])
-
-            if parserOut == "class":
-                recipe = spoonacularAPI.getAPIRequestByClass(types[0][0])
-
-            update.message.reply_text(constructRecipeString(recipe))
-            update.message.reply_text("Can I help you with something else? :)")
 
 
 
 def constructRecipeString(recipe):
     h1 = "Here's a recipe that I can recommend: " + recipe.title + "\n"
-    h2 = "\nIt can be prepared in " + str(recipe.readyInMinutes) + " minutes and for up to " + str(recipe.servings) + " servings!"
+    h2 = "\nIt can be prepared in " + str(recipe.readyInMinutes) + " minutes and for up to " + str(
+        recipe.servings) + " servings!"
     bodyIng = "\n\nIngredients: \n"
     for ing in recipe.ingredients:
         bodyIng = bodyIng + "\t " + ing.name + " - " + str(ing.amount) + " " + str(ing.unit) + "\n"
     bodyLink = "\nHere's how you can prepare it: " + recipe.sourceUrl + "\n"
-    return h1+h2+bodyIng+bodyLink
+    return h1 + h2 + bodyIng + bodyLink
 
 
 def error(update, context):
@@ -113,9 +139,9 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(CommandHandler("info", info_command))
 
-    # initialize keywords
-    tokenHandler.parse_keywords()
+
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, analyzeUserInput))

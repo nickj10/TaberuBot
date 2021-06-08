@@ -16,6 +16,7 @@ bot.
 """
 
 import logging
+import random
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from Handler import ParserHandler, SpoonacularAPI, NLPHandler
@@ -30,6 +31,11 @@ logger = logging.getLogger(__name__)
 parser = ParserHandler()
 spoonacularAPI = SpoonacularAPI()
 nlpHandler = NLPHandler()
+
+#RESPONSES
+CONTINUE_RESPONSES = ["Can I help you with something else? :)", "If you need anything else, do not hesitate to ask me", "Wow, I think it's an exquisite recipe , do you need anything else? ", "Bof, how hungry has I gotten, are we looking for something else?"]
+INGREDIENTS_RESPONSES = ["Would you like to add any more ingredients?", "Do you think we can add any more ingredients to the recipe? ", "Have you forgotten an ingredient for your meal?" ]
+ERROR_INGREDIENTS_RESPONSES = ["Well, I have not understood those ingredients, can you repeat? :)", "Is that an existing ingredient? Repeat please ", "I think that ingredient is not in my database, why not try again? " ]
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -68,14 +74,14 @@ def sendRecipe(update, context, recipe):
         update.message.reply_text(nlpHandler.sendRandomNotUnderstandable())
     else:
         update.message.reply_text(constructRecipeString(recipe))
-        update.message.reply_text("Can I help you with something else? :)")
+        update.message.reply_text(random.choice(CONTINUE_RESPONSES))
 
 def analyzeUserInput(update, context):
 
     if nlpHandler.waiting_ing:
         extra_ings, add = nlpHandler.addMoreIngredients(update.message.text)
         if not extra_ings and add:
-            update.message.reply_text("Well, I have not understood those ingredients, can you repeat? :)")
+            update.message.reply_text(random.choice(ERROR_INGREDIENTS_RESPONSES))
             return
         nlpHandler.waiting_args = nlpHandler.waiting_args + extra_ings
         recipe = executeUserRequest(1, args=nlpHandler.waiting_args)
@@ -93,16 +99,13 @@ def analyzeUserInput(update, context):
         ok, function_id, args = parser.parse(tags, semantic_list[i])
         if ok:
             if function_id == 1:
-                update.message.reply_text("Would you like to add any more ingredients?")
+                update.message.reply_text(random.choice(INGREDIENTS_RESPONSES))
                 nlpHandler.waiting_ing = True
                 nlpHandler.waiting_args = args
             else:
                 recipe = executeUserRequest(function_id, args)
-                if recipe == None:
-                    update.message.reply_text(nlpHandler.sendRandomNotUnderstandable())
-                else:
-                    update.message.reply_text(constructRecipeString(recipe))
-                    update.message.reply_text("Can I help you with something else? :)")
+                sendRecipe(update, context, recipe)
+
         else:
             update.message.reply_text(nlpHandler.sendRandomErrorMessage())
         i = i + 1

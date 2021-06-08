@@ -90,7 +90,7 @@ def analyzeUserInput(update, context):
         sendRecipe(update, context, recipe)
         return
 
-    tags_list, semantic_list = nlpHandler.analyzeText(update, context)
+    tags_list, semantic_list, greeting = nlpHandler.analyzeText(update, context)
     if not tags_list and not semantic_list:
         return
     ok = False
@@ -107,7 +107,8 @@ def analyzeUserInput(update, context):
             else:
                 recipe = executeUserRequest(function_id, args)
                 sendRecipe(update, context, recipe)
-
+        elif greeting:
+            break
         else:
             update.message.reply_text(nlpHandler.sendRandomErrorMessage())
         i = i + 1

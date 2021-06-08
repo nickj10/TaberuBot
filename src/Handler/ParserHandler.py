@@ -60,10 +60,15 @@ class ParserHandler:
     def createArguments(self, tags, semantics, function_id):
         i = 0
         str1 = ""
+        n_ings = 0
         for tag in tags :
             if function_id == 1:
                 if semantics[i] == "food":
-                    str1 = str1 + ",+" + tag[0]
+                    if n_ings == 0:
+                        str1 = tag[0]
+                        n_ings = n_ings + 1
+                    else:
+                        str1 = str1 + ",+" + tag[0]
             elif function_id == 2:
                 if semantics[i] == "cuisine":
                     str1 = tag[0]

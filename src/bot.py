@@ -63,11 +63,27 @@ def executeUserRequest(function_id, args):
         return spoonacularAPI.getAPIRequestByClass(args)
     else:
         return None
-
+def sendRecipe(update, context, recipe):
+    if recipe == None:
+        update.message.reply_text(nlpHandler.sendRandomNotUnderstandable())
+    else:
+        update.message.reply_text(constructRecipeString(recipe))
+        update.message.reply_text("Can I help you with something else? :)")
 
 def analyzeUserInput(update, context):
-    #obj = spoonacularAPI.getAPIRequestByCuisine("spanish")
-    #print("deu")
+
+    if nlpHandler.waiting_ing:
+        extra_ings, add = nlpHandler.addMoreIngredients(update.message.text)
+        if not extra_ings and add:
+            update.message.reply_text("Well, I have not understood those ingredients, can you repeat? :)")
+            return
+        nlpHandler.waiting_args = nlpHandler.waiting_args + extra_ings
+        recipe = executeUserRequest(1, args=nlpHandler.waiting_args)
+        nlpHandler.waiting_ing = False
+        nlpHandler.waiting_args = ""
+        sendRecipe(update, context, recipe)
+        return
+
     tags_list, semantic_list = nlpHandler.analyzeText(update, context)
     ok = False
     i = 0
@@ -76,12 +92,17 @@ def analyzeUserInput(update, context):
         function_id = -1
         ok, function_id, args = parser.parse(tags, semantic_list[i])
         if ok:
-            recipe = executeUserRequest(function_id, args)
-            if recipe == None:
-                update.message.reply_text(nlpHandler.sendRandomNotUnderstandable())
+            if function_id == 1:
+                update.message.reply_text("Would you like to add any more ingredients?")
+                nlpHandler.waiting_ing = True
+                nlpHandler.waiting_args = args
             else:
-                update.message.reply_text(constructRecipeString(recipe))
-                update.message.reply_text("Can I help you with something else? :)")
+                recipe = executeUserRequest(function_id, args)
+                if recipe == None:
+                    update.message.reply_text(nlpHandler.sendRandomNotUnderstandable())
+                else:
+                    update.message.reply_text(constructRecipeString(recipe))
+                    update.message.reply_text("Can I help you with something else? :)")
         else:
             update.message.reply_text(nlpHandler.sendRandomErrorMessage())
         i = i + 1

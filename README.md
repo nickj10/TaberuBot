@@ -8,6 +8,7 @@ Se ha desarrollado con Python 3.8. El entorno necesita las siguientes librerias:
 *  json
 *  requests
 *  decouple
+* nltk
 
 Para instalar las dependencias, el proyecto dispone de un Pipfile para instalarlas con pipenv.
 
@@ -20,19 +21,14 @@ Se recomienda usar una IDE como PyCharm.
 1. Señalar la carpeta src (click derecho) y marcar directorio como **Source Root**.
 2. Click derecho en el archivo bot.py y sobre la función main, selecciona "Run bot"
 3. Abrir Telegram
-4. Buscar el usuario @the_tarebu_bot
+4. Buscar el usuario @the_taberu_bot
 5. Hablar con el bot según instruciones y funcionalidades
-
-## Instrucciones de uso
-* Una frase por mensaje
-* Solo frases enunciativas (nada de preguntas, la gramática no lo soporta), 1 verbo por frase
-* Solo permite una especificación (una categoría, una clase, o un ingrediente)
 
 ## Funcionalidades
 * Pedir receta aleatoria (Ej: I want a random recipe, I need a recipe, Send me a aleatory recipe...)
 * Pedir receta según categoría (árabe, española, francesa) (Ej: I want a italian recipe...)
 * Pedir receta según clase (sopa, ensalada, ...) (Ej: I want a drink recipe...)
-* Pedir receta según ingredientes (actualmente solo 1 ingrediente) (Ej: I want a recipe with eggs, ...)
+* Pedir receta según ingredientes (1 o más ingredientes) (Ej: I want a recipe with eggs, ...)
 
 ## Script ejemplo:
 * Hello Taberubot!
@@ -46,5 +42,3 @@ Se recomienda usar una IDE como PyCharm.
 * What are you doing?
 * Oh yes almost forgot I want a drink recipe
 * No thank u goodbye
-
-En keywords.txt están los verbos, ingredientes, clases de comida, ... que acepta el bot

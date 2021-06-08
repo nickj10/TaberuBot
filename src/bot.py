@@ -91,6 +91,8 @@ def analyzeUserInput(update, context):
         return
 
     tags_list, semantic_list = nlpHandler.analyzeText(update, context)
+    if not tags_list and not semantic_list:
+        return
     ok = False
     i = 0
     for tags in tags_list:

@@ -1,8 +1,3 @@
-verbs : give, send, recommend, need, want, ask, have, do, get, make, know, find, suggest
-ing_nouns: egg, pork, veal, apple, pineapple, mango, pear, orange, banana, rice, macaroni, spaghetti, milk, lettuce, tomatoe, potato
-random_nouns : random, any, aleatory, unsorted, arbitrary, casual
-category_nouns  : african, american, british, cajun, caribbean, chinese, european, french, german, greek, indian, irish, italian, japanese, jewish, korean, mediterranean, mexican, middle eastern, nordic, southern, spanish, thai, vietnamese
 class_nouns: dessert, appetizer, salad, bread, breakfast, soup, beverage, sauce, marinade, fingerfood, snack, drink
 intro_nouns : hi, hello
 exit_nouns : finish, goodbye, bye
-general_nouns: recipe, something
